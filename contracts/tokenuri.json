@@ -1,0 +1,11 @@
+{
+    "name": "Ingresso SPFC - Setor Norte",
+    "description": "Ingresso NFT do São Paulo FC válido para a temporada 2025. Acesso ao setor Norte do Morumbi.",
+    "image": "https://green-total-felidae-639.mypinata.cloud/ipfs/bafkreibcaleboapmglpe3isfiqrbr7ctf6hvopflban6tstdelibnstry4",
+    "attributes": [
+      { "trait_type": "Clube", "value": "São Paulo FC" },
+      { "trait_type": "Setor", "value": "Norte" },
+      { "trait_type": "Validade", "value": "Temporada 2025" }
+    ]
+  }
+  

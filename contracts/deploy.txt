@@ -1,0 +1,9 @@
+forge script script/Deploy.s.sol:DeployTicketNFT \
+--rpc-url "$CHILIZ_RPC" \
+--private-key "$PRIVATE_KEY" \
+--broadcast \
+--gas-price 1000000000 \
+--legacy
+
+✅  [Success] Hash: 0x0c927ec4e41067639fe56c1a2022297063ff5edf91024f79faeb6fd858b32dfc
+Contract Address: 0xd37C4E87b5D6324F1A6de2f006Cea4039873b68F
