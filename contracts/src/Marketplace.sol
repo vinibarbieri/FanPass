@@ -4,90 +4,318 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract Marketplace is Ownable {
-    struct Listing {
+
+interface ITicketNFT is IERC721 {
+    function getPassInfo(uint256 tokenId) external view returns (
+        uint256 clubId,
+        string memory setor,
+        uint256 validFrom,
+        uint256 validTo
+    );
+}
+
+contract Marketplace is Ownable, ReentrancyGuard {
+    struct SaleListing {
         address seller;
-        address nftAddress;
-        uint256 tokenId;
         uint256 price;
         bool active;
     }
 
-    IERC20 public paymentToken;
-    address public platformFeeReceiver;
-    uint96 public platformFeeBps = 500; // 5%
-
-    error PaymentToSellerFailed();
-    error PaymentToPlatformFailed();
-    error ListingNotActive();
-    error InvalidFee();
-    error InvalidReceiver();
-    error InvalidNFT();
-    error InvalidTokenId();
-    error InvalidPrice();
-    error InvalidListingId();
-    error InvalidNFTAddress();
-
-    uint256 public listingId;
-    mapping(uint256 => Listing) public listings;
-
-    event Listed(uint256 indexed id, address seller, address nft, uint256 tokenId, uint256 price);
-    event Purchased(uint256 indexed id, address buyer, address nft, address seller, uint256 tokenId, uint256 price);
-
-    constructor(address _paymentToken, address _platformFeeReceiver) {
-        paymentToken = IERC20(_paymentToken);
-        platformFeeReceiver = _platformFeeReceiver;
+    struct RentListing {
+        address owner;
+        uint256 pricePerDay;
+        uint256 maxDuration; // in days
+        uint256 minDuration; // in days
+        bool active;
     }
 
-    function listNFT(address nft, uint256 tokenId, uint256 price) external {
-        IERC721(nft).transferFrom(msg.sender, address(this), tokenId);
+    struct RentInfo {
+    address owner;
+    address renter;
+    uint256 expiresAt;
+    bool active;
+    }
 
-        listings[listingId] = Listing({
+    address public ticketNFT;
+
+    uint96 public platformFeeBps = 500; // 5%
+    address public platformReceiver;
+
+    mapping(address => bool) public allowedExecutors;
+
+    mapping(uint256 => RentInfo) public activeRents;
+
+    mapping(uint256 => SaleListing) public saleListings;
+    mapping(uint256 => RentListing) public rentListings;
+
+    // clubId => fan token address
+    mapping(uint256 => address) public fanTokens;
+
+    // clubId => receiver address (para royalties)
+    mapping(uint256 => address) public clubReceivers;
+
+    event NFTListedForSale(uint256 tokenId, address seller, uint256 price);
+    event SaleListingEdited(uint256 tokenId, address seller, uint256 price);
+    event NFTSold(uint256 tokenId, address buyer, address seller, uint256 price);
+
+    event NFTListedForRent(uint256 tokenid, address owner, uint256 pricePerDay, uint256 maxDuration, uint256 minDuration);
+    event NFTRented(uint256 tokenid, address renter, address owner, uint256 durationDays, uint256 pricePerDay);
+    event RentListingEdited(uint256 tokenId, address owner, uint256 pricePerDay, uint256 maxDuration, uint256 minDuration);
+
+    event SaleListingCancelled(uint256 tokenId);
+    event RentListingCancelled(uint256 tokenId);
+
+    error FailToPayPlatform();
+    error FailToPaySeller();
+    error FailToPayClub();
+    error NotActive();
+    error TooLongDuration();
+    error TooShortDuration();
+    error InvalidDuration();
+    error AlreadyRented();
+    error AlreadyListed();
+    error NotOwner();
+    error NotSeller();
+    error MarketplaceNotApproved();
+    error TransferToMarketplaceFailed();
+    error InvalidPrice();
+    error StillRented();
+    error StillListedToSell();
+    error TicketTransferFailed();
+    error FailedToRefundBuyer();
+    error TicketRentalFailed();
+    error InvalidFee();
+    error FailedToPayMarketplace();
+
+
+    constructor(address _ticketNFT, address _platformReceiver, address _initial_owner) Ownable(_initial_owner) {
+        ticketNFT = _ticketNFT;
+        platformReceiver = _platformReceiver;
+    }
+
+    function setFanToken(uint256 clubId, address token) external onlyOwner {
+        fanTokens[clubId] = token;
+    }
+
+    function setClubReceiver(uint256 clubId, address receiver) external onlyOwner {
+        clubReceivers[clubId] = receiver;
+    }
+
+    function setPlatformFee(uint96 bps) external onlyOwner {
+        require(bps <= 1000, InvalidFee());
+        platformFeeBps = bps;
+    }
+
+    function listForSale(uint256 tokenId, uint256 price) external {
+        require(price > 0, InvalidPrice());
+        require(saleListings[tokenId].active == false, AlreadyListed());
+        require(activeRents[tokenId].active == false, AlreadyRented());
+    
+        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == msg.sender, NotOwner());
+
+        saleListings[tokenId] = SaleListing({
             seller: msg.sender,
-            nftAddress: nft,
-            tokenId: tokenId,
             price: price,
             active: true
         });
 
-        emit Listed(listingId, msg.sender, nft, tokenId, price);
-        listingId++;
+        emit NFTListedForSale(tokenId, msg.sender, price);
     }
 
-    function buyNFT(uint256 id) external {
-        Listing storage item = listings[id];
-        require(item.active, ListingNotActive());
-        require(item.price > 0, InvalidPrice());
-        require(item.seller != address(0), InvalidReceiver());
-        require(item.nftAddress != address(0), InvalidNFTAddress());
+    function editSaleListing(uint256 tokenId, uint256 price) external {
+        SaleListing storage listing = saleListings[tokenId];
+        require(listing.active, NotActive());
+        require(listing.seller == msg.sender, NotSeller());
+        require(price > 0, InvalidPrice());
 
-        uint256 fee = (item.price * platformFeeBps) / 10000;
-        uint256 sellerAmount = item.price - fee;
+        listing.price = price;
 
-        // Melhorar lógica para devolver paymentToken se falhar
-        if (paymentToken.transferFrom(msg.sender, item.seller, sellerAmount)) {
-            if (paymentToken.transferFrom(msg.sender, platformFeeReceiver, fee)) {
-                // Transferir NFT para o comprador
-                IERC721(item.nftAddress).transferFrom(address(this), msg.sender, item.tokenId);
-            } else {
-                revert PaymentToPlatformFailed();
-            }
-        } else {
-            revert PaymentToSellerFailed();
+        emit SaleListingEdited(tokenId, msg.sender, price);
+    }
+
+    function cancelSaleListing(uint256 tokenId) external {
+        SaleListing storage listing = saleListings[tokenId];
+        require(listing.active, NotActive());
+        require(listing.seller == msg.sender, NotSeller());
+
+        delete saleListings[tokenId];
+
+        emit SaleListingCancelled(tokenId);
+    }
+
+    function buy(uint256 tokenId) external nonReentrant {
+        SaleListing storage listing = saleListings[tokenId];
+        require(listing.active, NotActive());
+        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.seller, NotOwner());
+        require(ITicketNFT(ticketNFT).getApproved(tokenId) == address(this), MarketplaceNotApproved());
+
+        (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
+        IERC20 token = IERC20(fanTokens[clubId]);
+
+        uint256 fee = (listing.price * platformFeeBps) / 10000;
+        uint256 clubFee = fee / 2;
+        uint256 sellerAmount = listing.price - fee;
+        uint256 platformAmount = fee - clubFee;
+
+        bool ok = token.transferFrom(msg.sender, address(this), listing.price);
+        if (!ok) revert FailedToPayMarketplace();
+
+        // Transfere o NFT para o comprador e os pagamentos apenas se a transferência for bem sucedida
+        try ITicketNFT(ticketNFT).safeTransferFrom(listing.seller, msg.sender, tokenId) {
+            ok = token.transfer(listing.seller, sellerAmount);
+            if (!ok) revert FailToPaySeller();
+
+            ok = token.transfer(clubReceivers[clubId], clubFee);
+            if (!ok) revert FailToPayClub();
+        
+            ok = token.transfer(platformReceiver, platformAmount);
+            if (!ok) revert FailToPayPlatform();
+
+            _clearListings(tokenId);
+            emit NFTSold(tokenId, msg.sender, listing.seller, listing.price);
+        } catch {
+            require(token.transfer(msg.sender, listing.price), FailedToRefundBuyer());
+            revert TicketTransferFailed();
         }
 
-        item.active = false;
-        emit Purchased(id, msg.sender, item.nftAddress, item.seller, item.tokenId, item.price);
     }
 
-    function updateFee(uint96 newFeeBps) external onlyOwner {
-        require(newFeeBps <= 1000, InvalidFee());
-        platformFeeBps = newFeeBps;
+    function listForRent(uint256 tokenId, uint256 pricePerDay, uint256 maxDuration, uint256 minDuration) external {
+        require(maxDuration > 0, TooShortDuration());
+        require(activeRents[tokenId].active == false, AlreadyRented());
+        require(rentListings[tokenId].active == false, AlreadyListed());
+        require(pricePerDay > 0, InvalidPrice());
+
+        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == msg.sender, NotOwner());
+
+        rentListings[tokenId] = RentListing({
+            owner: msg.sender,
+            pricePerDay: pricePerDay,
+            maxDuration: maxDuration,
+            minDuration: minDuration,
+            active: true
+        });
+
+        emit NFTListedForRent(tokenId, msg.sender, pricePerDay, maxDuration, minDuration);
     }
 
-    function setPlatformReceiver(address newReceiver) external onlyOwner {
-        require(newReceiver != address(0), InvalidReceiver());
-        platformFeeReceiver = newReceiver;
+    function editRentListing(uint256 tokenId, uint256 pricePerDay, uint256 maxDuration, uint256 minDuration) external {
+        RentListing storage listing = rentListings[tokenId];
+        require(listing.active, NotActive());
+        require(listing.owner == msg.sender, NotOwner());
+        require(pricePerDay > 0, InvalidPrice());
+        require(maxDuration > 0, TooShortDuration());
+
+        listing.pricePerDay = pricePerDay;
+        listing.maxDuration = maxDuration;
+        listing.minDuration = minDuration;
+
+        emit RentListingEdited(tokenId, msg.sender, pricePerDay, maxDuration, minDuration);
     }
+
+    function rent(uint256 tokenId, uint256 durationDays) external nonReentrant {
+        RentListing storage listing = rentListings[tokenId];
+        require(listing.active, NotActive());
+        require(durationDays <= listing.maxDuration, TooLongDuration());
+        require(durationDays >= listing.minDuration, TooShortDuration());
+
+        (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
+        IERC20 token = IERC20(fanTokens[clubId]);
+
+        require(ITicketNFT(ticketNFT).getApproved(tokenId) == address(this), MarketplaceNotApproved());
+        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.owner, NotOwner());
+
+        uint256 totalPrice = listing.pricePerDay * durationDays;
+        uint256 fee = (totalPrice * platformFeeBps) / 10000;
+        uint256 clubFee = fee / 2;
+        uint256 ownerAmount = totalPrice - fee;
+        uint256 platformAmount = fee - clubFee;
+
+        bool ok = token.transferFrom(msg.sender, address(this), totalPrice);
+        if (!ok) revert FailedToPayMarketplace();
+
+        // Transfere o NFT para o marketplace e os pagamentos apenas se a transferência for bem sucedida
+        try ITicketNFT(ticketNFT).safeTransferFrom(listing.owner, address(this), tokenId) {
+
+            activeRents[tokenId] = RentInfo({
+                owner: listing.owner,
+                renter: msg.sender,
+                expiresAt: block.timestamp + (durationDays * 1 days),
+                active: true
+                });
+
+            ok = token.transfer(listing.owner, totalPrice);
+            if (!ok) revert FailToPaySeller();
+
+            ok = token.transfer(clubReceivers[clubId], clubFee);
+            if (!ok) revert FailToPayClub();
+        
+            ok = token.transfer(platformReceiver, platformAmount);
+            if (!ok) revert FailToPayPlatform();
+
+            _clearListings(tokenId);
+            emit NFTRented(tokenId, msg.sender, listing.owner, durationDays, listing.pricePerDay);
+        } catch {
+            require(token.transfer(msg.sender, totalPrice), FailedToRefundBuyer());
+            revert TicketRentalFailed();
+        }
+    }
+
+    function withdrawRentedNFT(uint256 tokenId) external {
+        RentInfo storage info = activeRents[tokenId];
+        require(
+            msg.sender == info.renter || 
+            msg.sender == info.owner ||
+            allowedExecutors[msg.sender],
+            NotOwner()
+        );
+        require(info.active, NotActive());
+        require(block.timestamp >= info.expiresAt, StillRented());
+
+        ITicketNFT(ticketNFT).safeTransferFrom(address(this), info.owner, tokenId);
+
+        delete activeRents[tokenId];
+    }
+
+    function isRentalActive(uint256 tokenId) public view returns (bool) {
+        RentInfo memory info = activeRents[tokenId];
+        return info.active && block.timestamp < info.expiresAt;
+    }
+
+    function cancelRentListing(uint256 tokenId) external {
+        RentListing storage listing = rentListings[tokenId];
+        require(listing.active, NotActive());
+        require(listing.owner == msg.sender, NotOwner());
+        require(!isRentalActive(tokenId), StillRented());
+
+        delete rentListings[tokenId];
+
+        emit RentListingCancelled(tokenId);
+    }
+
+    function getActiveListings(uint256 tokenId) external view returns (SaleListing memory, RentListing memory) {
+        SaleListing memory saleList = saleListings[tokenId];
+        RentListing memory rentList = rentListings[tokenId];
+        return (saleList, rentList);
+    }
+
+    function getPriceToRent(uint256 tokenId, uint256 daysCount) external view returns (uint256) {
+        RentListing memory listing = rentListings[tokenId];
+        return listing.pricePerDay * daysCount;
+    }
+
+    function setExecutors(address executor, bool allowed) external onlyOwner {
+        allowedExecutors[executor] = allowed;
+    }
+
+    function _clearListings(uint256 tokenId) internal {
+        delete saleListings[tokenId];
+        delete rentListings[tokenId];
+        delete activeRents[tokenId];
+    }
+
+
+
 }
