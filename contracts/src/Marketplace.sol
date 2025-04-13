@@ -70,7 +70,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
     error FailToPayPlatform();
     error FailToPaySeller();
     error FailToPayClub();
-    error NotActive();
+    error NotListed();
     error TooLongDuration();
     error TooShortDuration();
     error InvalidDuration();
@@ -155,7 +155,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function editSaleListing(uint256 tokenId, uint256 price) external {
         SaleListing storage listing = saleListings[tokenId];
-        require(listing.active, NotActive());
+        require(listing.active, NotListed());
         require(listing.seller == msg.sender, NotSeller());
         require(price > 0, InvalidPrice());
 
@@ -166,7 +166,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function cancelSaleListing(uint256 tokenId) external {
         SaleListing storage listing = saleListings[tokenId];
-        require(listing.active, NotActive());
+        require(listing.active, NotListed());
         require(listing.seller == msg.sender, NotSeller());
 
         delete saleListings[tokenId];
@@ -176,7 +176,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function buy(uint256 tokenId) external nonReentrant {
         SaleListing storage listing = saleListings[tokenId];
-        require(listing.active, NotActive());
+        require(listing.active, NotListed());
 
         require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.seller, NotOwner());
         require(ITicketNFT(ticketNFT).getApproved(tokenId) == address(this), MarketplaceNotApproved());
@@ -236,7 +236,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function editRentListing(uint256 tokenId, uint256 pricePerDay, uint256 maxDuration, uint256 minDuration) external {
         RentListing storage listing = rentListings[tokenId];
-        require(listing.active, NotActive());
+        require(listing.active, NotListed());
         require(listing.owner == msg.sender, NotOwner());
         require(pricePerDay > 0, InvalidPrice());
         require(maxDuration > 0, TooShortDuration());
@@ -250,7 +250,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function rent(uint256 tokenId, uint256 durationDays) external nonReentrant {
         RentListing storage listing = rentListings[tokenId];
-        require(listing.active, NotActive());
+        require(listing.active, NotListed());
         require(durationDays <= listing.maxDuration, TooLongDuration());
         require(durationDays >= listing.minDuration, TooShortDuration());
 
@@ -307,7 +307,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
             allowedExecutors[msg.sender],
             NotOwner()
         );
-        require(info.active, NotActive());
+        require(info.active, NotListed());
         require(block.timestamp >= info.expiresAt, StillRented());
 
         ITicketNFT(ticketNFT).safeTransferFrom(address(this), info.owner, tokenId);
@@ -322,7 +322,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function cancelRentListing(uint256 tokenId) external {
         RentListing storage listing = rentListings[tokenId];
-        require(listing.active, NotActive());
+        require(listing.active, NotListed());
         require(listing.owner == msg.sender, NotOwner());
         require(!isRentalActive(tokenId), StillRented());
 
