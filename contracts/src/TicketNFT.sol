@@ -80,6 +80,10 @@ contract TicketNFT is ERC721URIStorage, ERC2981, Ownable {
         return (info.sector, info.clubId, info.validFrom, info.validUntil);
     }
 
+    function geTokenURI(uint256 tokenId) public view returns (string memory) {
+        return tokenURI(tokenId);
+    }
+
     /**
      * @notice Atualiza a taxa e o destinatário dos royalties
      * @dev Somente o owner (admin)
