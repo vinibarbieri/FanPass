@@ -246,7 +246,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
                 active: true
                 });
 
-            ok = token.transfer(listing.owner, totalPrice);
+            ok = token.transfer(listing.owner, ownerAmount);
             if (!ok) revert FailToPaySeller();
 
             ok = token.transfer(clubReceivers[clubId], clubFee);
