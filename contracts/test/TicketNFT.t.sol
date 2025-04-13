@@ -3,9 +3,9 @@ pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
 import "../src/TicketNFT.sol";
-import "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
-import "lib/openzeppelin-contracts/contracts/interfaces/IERC2981.sol";
-import "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/interfaces/IERC2981.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TicketNFTTest is Test {
     TicketNFT public ticket;

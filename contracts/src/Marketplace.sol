@@ -137,6 +137,11 @@ contract Marketplace is Ownable, ReentrancyGuard {
         return owner();
     }
 
+    function getActiveRentInfo(uint256 tokenId) external view returns (RentInfo memory) {
+        return activeRents[tokenId];
+    }
+
+
     function listForSale(uint256 tokenId, uint256 price) external {
         require(ITicketNFT(ticketNFT).ownerOf(tokenId) == msg.sender, NotOwner());
         require(price > 0, InvalidPrice());
@@ -247,8 +252,8 @@ contract Marketplace is Ownable, ReentrancyGuard {
         RentListing storage listing = rentListings[tokenId];
         require(listing.active, NotListed());
         require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.owner, NotOwner());
-        require(durationDays <= (listing.maxDuration / 1 days), TooLongDuration());
-        require(durationDays >= (listing.minDuration / 1 days), TooShortDuration());
+        require(durationDays <= listing.maxDuration, TooLongDuration());
+        require(durationDays >= listing.minDuration, TooShortDuration());
 
         (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
         IERC20 token = IERC20(fanTokens[clubId]);
