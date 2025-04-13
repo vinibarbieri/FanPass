@@ -100,8 +100,16 @@ contract Marketplace is Ownable, ReentrancyGuard {
         fanTokens[clubId] = token;
     }
 
+    function getFanToken(uint256 clubId) external view returns (address) {
+        return fanTokens[clubId];
+    }
+
     function setClubReceiver(uint256 clubId, address receiver) external onlyOwner {
         clubReceivers[clubId] = receiver;
+    }
+
+    function getClubReceiver(uint256 clubId) external view returns (address) {
+        return clubReceivers[clubId];
     }
 
     function setPlatformFee(uint96 bps) external onlyOwner {
@@ -109,12 +117,24 @@ contract Marketplace is Ownable, ReentrancyGuard {
         platformFeeBps = bps;
     }
 
+    function getPlatformFee() external view returns (uint96) {
+        return platformFeeBps;
+    }
+
     function setPlatformReceiver(address receiver) external onlyOwner {
         platformReceiver = receiver;
     }
 
+    function getPlatformReceiver() external view returns (address) {
+        return platformReceiver;
+    }
+
     function setOwner(address newOwner) external onlyOwner {
         transferOwnership(newOwner);
+    }
+
+    function getOwner() external view returns (address) {
+        return owner();
     }
 
     function listForSale(uint256 tokenId, uint256 price) external {
