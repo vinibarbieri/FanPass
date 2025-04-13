@@ -113,7 +113,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
     }
 
     function setPlatformFee(uint96 bps) external onlyOwner {
-        require(bps <= 1000, InvalidFee());
+        require(bps > 0 && bps <= 1000, InvalidFee());
         platformFeeBps = bps;
     }
 
@@ -175,9 +175,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function buy(uint256 tokenId) external nonReentrant {
         SaleListing storage listing = saleListings[tokenId];
-        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.seller, NotOwner());
         require(listing.active, NotListed());
 
+        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.seller, NotOwner());
         require(ITicketNFT(ticketNFT).getApproved(tokenId) == address(this), MarketplaceNotApproved());
 
         (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
@@ -248,8 +248,8 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function rent(uint256 tokenId, uint256 durationDays) external nonReentrant {
         RentListing storage listing = rentListings[tokenId];
-        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.owner, NotOwner());
         require(listing.active, NotListed());
+        require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.owner, NotOwner());
         require(durationDays <= listing.maxDuration, TooLongDuration());
         require(durationDays >= listing.minDuration, TooShortDuration());
 
