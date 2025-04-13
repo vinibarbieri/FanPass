@@ -88,6 +88,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
     error TicketRentalFailed();
     error InvalidFee();
     error FailedToPayMarketplace();
+    error InsufficientBalance();
 
 
     constructor(address _ticketNFT, address _platformReceiver, address _initial_owner) Ownable(_initial_owner) {
@@ -148,11 +149,15 @@ contract Marketplace is Ownable, ReentrancyGuard {
     function buy(uint256 tokenId) external nonReentrant {
         SaleListing storage listing = saleListings[tokenId];
         require(listing.active, NotActive());
+
         require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.seller, NotOwner());
         require(ITicketNFT(ticketNFT).getApproved(tokenId) == address(this), MarketplaceNotApproved());
 
         (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
         IERC20 token = IERC20(fanTokens[clubId]);
+
+        uint256 buyerBalance = token.balanceOf(msg.sender);
+        require(buyerBalance >= listing.price, InsufficientBalance());
 
         uint256 fee = (listing.price * platformFeeBps) / 10000;
         uint256 clubFee = fee / 2;
@@ -226,6 +231,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
         require(ITicketNFT(ticketNFT).getApproved(tokenId) == address(this), MarketplaceNotApproved());
         require(ITicketNFT(ticketNFT).ownerOf(tokenId) == listing.owner, NotOwner());
+
+        uint256 buyerBalance = token.balanceOf(msg.sender);
+        require(buyerBalance >= listing.pricePerDay * durationDays, InsufficientBalance());
 
         uint256 totalPrice = listing.pricePerDay * durationDays;
         uint256 fee = (totalPrice * platformFeeBps) / 10000;
