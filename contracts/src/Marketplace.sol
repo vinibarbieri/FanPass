@@ -109,6 +109,14 @@ contract Marketplace is Ownable, ReentrancyGuard {
         platformFeeBps = bps;
     }
 
+    function setPlatformReceiver(address receiver) external onlyOwner {
+        platformReceiver = receiver;
+    }
+
+    function setOwner(address newOwner) external onlyOwner {
+        transferOwnership(newOwner);
+    }
+
     function listForSale(uint256 tokenId, uint256 price) external {
         require(price > 0, InvalidPrice());
         require(saleListings[tokenId].active == false, AlreadyListed());
