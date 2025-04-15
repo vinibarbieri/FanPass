@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
@@ -80,7 +80,7 @@ contract TicketNFT is ERC721URIStorage, ERC2981, Ownable {
         return (info.sector, info.clubId, info.validFrom, info.validUntil);
     }
 
-    function geTokenURI(uint256 tokenId) public view returns (string memory) {
+    function getTokenURI(uint256 tokenId) public view returns (string memory) {
         return tokenURI(tokenId);
     }
 

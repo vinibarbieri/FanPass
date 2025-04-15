@@ -5,5 +5,10 @@ forge script script/Deploy.s.sol:DeployTicketNFT \
 --gas-price 1000000000 \
 --legacy
 
-✅  [Success] Hash: 0x0c927ec4e41067639fe56c1a2022297063ff5edf91024f79faeb6fd858b32dfc
-Contract Address: 0xd37C4E87b5D6324F1A6de2f006Cea4039873b68F
+✅  [Success] Hash: 0xd4f9f227fb19afbafa5a4ba4477e246a357b9ab3b5b943387d0f99344a3f5dba
+Contract Address: 0xd06ec405eb48a7c9317C3982f4BD3B553FF9403c
+
+
+##### 88882
+✅  [Success] Hash: 0xd2fa82dbdfd387b5db41fe91f86444e034a615e3ccdf928b2f40779ed1a50f8b
+Contract Address: 0x420c3231B1E099b2FDF0B0ebC3972278aaE0eBAE
