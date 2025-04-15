@@ -346,7 +346,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
         allowedExecutors[executor] = allowed;
     }
 
-    function _clearListings(uint256 tokenId) public {
+    function _clearListings(uint256 tokenId) private {
         delete saleListings[tokenId];
         delete rentListings[tokenId];
         delete activeRents[tokenId];
