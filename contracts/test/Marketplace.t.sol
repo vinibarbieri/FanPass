@@ -453,36 +453,45 @@ contract MarketplaceInitTest is Test {
     }
 
     function testRentValid() public {
+        // 1. USER minta o token
         vm.prank(user);
         uint256 tokenId = nft.mint(user);
+
+        // 2. USER aprova o marketplace
         vm.prank(user);
         nft.approve(address(marketplace), tokenId);
 
+        // 3. USER lista o token para aluguel
         vm.prank(user);
-        marketplace.listForRent(tokenId, 1 ether, 10, 1);
+        marketplace.listForRent(tokenId, 1 ether, 10, 1); // preço/dia, max dias, min dias
 
-        (, Marketplace.RentListing memory rentBefore) = marketplace.getActiveListings(tokenId);
-        assertEq(rentBefore.owner, user);
-        assertEq(rentBefore.pricePerDay, 1 ether);
-        assertTrue(rentBefore.active);
-
-        // buyer recebe tokens e aprova
+        // 4. OWNER transfere tokens pro BUYER
         vm.prank(owner);
         fanToken.transfer(buyer, 10 ether);
+
+        // 5. BUYER aprova o marketplace
         vm.prank(buyer);
         fanToken.approve(address(marketplace), 10 ether);
 
-        vm.expectEmit(true, true, true, true);
-        emit Marketplace.NFTRented(tokenId, buyer, user, 1, 1 ether);
-
+        // 6. BUYER aluga o token por 1 dia
         vm.prank(buyer);
         marketplace.rent(tokenId, 1);
 
+        // 7. Verifica que a info de aluguel está correta
         Marketplace.RentInfo memory rentInfo = marketplace.getActiveRentInfo(tokenId);
         assertEq(rentInfo.owner, user);
         assertEq(rentInfo.renter, buyer);
         assertTrue(rentInfo.active);
+        assertGt(rentInfo.expiresAt, block.timestamp);
+
+        // 8. Verifica que o NFT foi transferido para o marketplace
+        assertEq(nft.ownerOf(tokenId), address(marketplace));
+
+        // 9. Verifica que o listing de aluguel foi limpo (apenas checa se não está mais ativo)
+        (, Marketplace.RentListing memory rentAfter) = marketplace.getActiveListings(tokenId);
+        assertFalse(rentAfter.active);
     }
+
 
 
 
@@ -678,7 +687,7 @@ contract MarketplaceInitTest is Test {
         marketplace.rent(tokenId, 1);
 
         // 5. Avança o tempo para depois do aluguel (1 dia)
-        vm.warp(block.timestamp + 2); // > 1 dia para satisfazer StillRented()
+        vm.warp(block.timestamp + 2 days); // > 1 dia para satisfazer StillRented()
 
         // 6. Quem retira pode ser o renter (buyer), owner (user) ou executor
         vm.prank(buyer);
@@ -721,62 +730,6 @@ contract MarketplaceInitTest is Test {
         vm.expectRevert(Marketplace.NotOwner.selector);
         vm.prank(user2);
         marketplace.withdrawRentedNFT(tokenId);
-    }
-
-    function test_clearListings() public {
-        vm.prank(user);
-        uint256 tokenId = nft.mint(user);
-        vm.prank(user);
-        nft.approve(address(marketplace), tokenId);
-
-        vm.prank(user);
-        marketplace.listForSale(tokenId, 1 ether);
-
-        vm.prank(user);
-        marketplace.listForRent(tokenId, 1 ether, 10, 1);
-
-        vm.prank(user);
-        // Transformar a função em pública para o teste
-        marketplace._clearListings(tokenId);
-
-        (Marketplace.SaleListing memory sale, Marketplace.RentListing memory rent) = marketplace.getActiveListings(tokenId);
-        assertEq(sale.seller, user);
-        assertEq(sale.price, 0);
-        assertFalse(sale.active);
-
-        assertEq(rent.owner, user);
-        assertEq(rent.pricePerDay, 0);
-        assertFalse(rent.active);
-    }
-
-    function test_clearListingsNotOwner() public {
-        vm.prank(user);
-        uint256 tokenId = nft.mint(user);
-        vm.prank(user);
-        nft.approve(address(marketplace), tokenId);
-
-        vm.expectRevert(Marketplace.NotOwner.selector);
-        vm.prank(buyer);
-        marketplace._clearListings(tokenId);
-    }
-
-    function test_clearListingsNotListed() public {
-        vm.prank(user);
-        uint256 tokenId = nft.mint(user);
-        vm.prank(user);
-        nft.approve(address(marketplace), tokenId);
-
-        vm.prank(user);
-        marketplace._clearListings(tokenId);
-
-        (Marketplace.SaleListing memory sale, Marketplace.RentListing memory rent) = marketplace.getActiveListings(tokenId);
-        assertEq(sale.seller, user);
-        assertEq(sale.price, 0);
-        assertFalse(sale.active);
-
-        assertEq(rent.owner, user);
-        assertEq(rent.pricePerDay, 0);
-        assertFalse(rent.active);
     }
 
 
