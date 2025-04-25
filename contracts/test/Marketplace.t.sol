@@ -140,7 +140,7 @@ contract MarketplaceInitTest is Test {
         vm.startPrank(owner);
         nft = new MockTicketNFT();
         fanToken = new MockERC20();
-        marketplace = new Marketplace(address(nft), platform, owner);
+        marketplace = new Marketplace(address(nft), platform);
         marketplace.setFanToken(1, address(fanToken));
         marketplace.setClubReceiver(1, clubReceiver);
         marketplace.setPlatformFee(900);        

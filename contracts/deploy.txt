@@ -20,3 +20,37 @@ cast send \
 
 ========= verifica controller address ==========
 cast call "$TICKET_NFT_ADDRESS" "controller()(address)" --rpc-url "$CHILIZ_RPC"
+
+
+
+
+========= MARKETPLACE.sol =============
+forge script script/DeployMarketplace.s.sol:DeployMarketplace \
+--rpc-url "$CHILIZ_RPC" \
+--private-key "$PRIVATE_KEY" \
+--broadcast \
+--gas-price 4000000000 \
+--legacy
+
+##### 88882
+✅  [Success] Hash: 0x39367a6449c594161d3e2d6a1b74525aa0e5a49de48cee0d0a75db95d57cd7fd
+Contract Address: 0x1323DDAFe3b91C295578e7a25CBb4b2FB3aE6a7f
+Block: 23998620
+Paid: 9.989914368 ETH (3994368 gas * 2501 gwei)
+
+✅ Sequence #1 on 88882 | Total Paid: 9.989914368 ETH (3994368 gas * avg 2501 gwei)
+
+
+
+cast send 0x1323DDAFe3b91C295578e7a25CBb4b2FB3aE6a7f \
+"listForSale(uint256,uint256)" \
+0 \
+100 \
+--private-key  \
+--rpc-url "$CHILIZ_RPC" \
+--legacy
+
+
+TICKET_NFT_ADDRESS=0x6915Dad8b70E1f6AC72731fF2f1CE8537D150b67
+MARKETPLACE=0x1323DDAFe3b91C295578e7a25CBb4b2FB3aE6a7f
+SPFC=0x828C11d2268d5873688DB829ef3a3f3E055D7B85
