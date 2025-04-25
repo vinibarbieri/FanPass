@@ -1,6 +1,3 @@
-Aqui está um **README** estruturado para o seu contrato `Marketplace.sol`:  
-
----
 # 📄 Marketplace Smart Contract - Guia de Uso
 
 Este contrato permite listar, vender e alugar NFTs da coleção **TicketNFT**, além de gerenciar taxas de plataforma e royalties para clubes.
