@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  background-color: darkgray;
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradientAnimation 15s ease infinite;
 }

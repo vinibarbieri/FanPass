@@ -14,11 +14,13 @@ export const Web3Provider = ({ children }) => {
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
+        const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+
         const provider = new ethers.BrowserProvider(window.ethereum);
         const accounts = await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
+        const signer = await provider.getSigner();
         const contract = new ethers.Contract(
-          process.env.REACT_APP_CONTRACT_ADDRESS,
+          contractAddress,
           ticketAbi,
           signer
         );

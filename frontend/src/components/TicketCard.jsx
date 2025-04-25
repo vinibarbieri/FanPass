@@ -14,9 +14,12 @@ const TicketCard = ({ ticket }) => {
   const fanTokenImages = {
     1: "/sp.png",
     2: "/mengo.png",
-    3: "/ava.jpeg",
-    4: "/barca.png",
-    5: "/santos.png",
+    3: "/vasco.jpeg",
+    4: "/palmeiras.png",
+    5: "/inter.png",
+    5: "/flu.png",
+    5: "/corinthians.png",
+
     // adicione conforme necessário
   };
 
@@ -27,11 +30,14 @@ const TicketCard = ({ ticket }) => {
   // Função para obter o gradiente baseado na cor do clube
   const getClubGradient = (clubId) => {
     const gradients = {
-      1: "linear-gradient(135deg, #0053A0, #0070C9)", // SP
-      2: "linear-gradient(135deg, #F7A800, #F00)", // Mengo
-      3: "linear-gradient(135deg, #0033A0, #0047B3)", // Avaí
-      4: "linear-gradient(135deg, #002F6C, #1E61A0)", // Barca
-      5: "linear-gradient(135deg, #0D0D0D, #B2B2B2)", // Santos
+      1: "linear-gradient(135deg, #ec1c24, #ffffff)", // SP
+      2: "linear-gradient(135deg, #f20000, #000000)", // Mengo
+      3: "linear-gradient(135deg, #000000, #c0c0c0)", // Vasco
+      4: "linear-gradient(135deg, #006437, #ffffff)", // Palmeiras
+      5: "linear-gradient(135deg, #9e1b32, #ffffff)", // Internacional
+      6: "linear-gradient(135deg, #009c3b, #009c3b)", // Fluminense
+      7: "linear-gradient(135deg, #000000, #ffffff)", // Corinthians
+
       // adicione conforme necessário
     };
     return gradients[clubId] || "linear-gradient(135deg, #333333, #111111)"; // cor padrão
