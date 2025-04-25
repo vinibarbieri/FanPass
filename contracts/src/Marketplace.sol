@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.23;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 
 interface ITicketNFT is IERC721 {
@@ -32,10 +32,10 @@ contract Marketplace is Ownable, ReentrancyGuard {
     }
 
     struct RentInfo {
-    address owner;
-    address renter;
-    uint256 expiresAt;
-    bool active;
+        address owner;
+        address renter;
+        uint256 expiresAt;
+        bool active;
     }
 
     address public ticketNFT;
@@ -91,7 +91,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
     error InsufficientBalance();
 
 
-    constructor(address _ticketNFT, address _platformReceiver, address _initial_owner) Ownable(_initial_owner) {
+    constructor(address _ticketNFT, address _platformReceiver, address _initial_owner) Ownable() {
         ticketNFT = _ticketNFT;
         platformReceiver = _platformReceiver;
     }
@@ -113,7 +113,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
     }
 
     function setPlatformFee(uint96 bps) external onlyOwner {
-        require(bps > 0 && bps <= 1000, InvalidFee());
+        if (bps == 0 || bps > 1000) {
+            revert InvalidFee();
+        }
         platformFeeBps = bps;
     }
 

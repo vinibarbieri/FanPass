@@ -53,7 +53,7 @@ fanpass/
 - **Tatum ou Moralis** (conversão Pix/cartão → Fan Token)
 
 ### Integrações
-- **Pyth** (preço em USD dos Fan Tokens + randomness)
+- **CoinGecko** (preço em USD dos Fan Tokens + randomness)
 - **The Graph** (subgraph de presença e transferências)
 - **Envio** (monitoramento e alertas no Telegram)
 - **Blocknative Gas API** (estimativa de taxas)
@@ -112,8 +112,8 @@ npm run dev
 
 - [x] Estrutura do projeto
 - [x] Deploy inicial de `FanTicketNFT`
-- [ ] Integração com login social
-- [ ] Geração automática de wallet (Biconomy)
+- [x] Integração com login social
+- [x] Geração automática de wallet (Biconomy)
+- [x] Integração com CoinGecko
 - [ ] Conversão Pix/cartão → CHZ (via Tatum)
-- [ ] Integração com Pyth e The Graph
 - [ ] Deploy final na Chiliz Mainnet

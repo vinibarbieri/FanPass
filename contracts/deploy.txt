@@ -5,10 +5,18 @@ forge script script/Deploy.s.sol:DeployTicketNFT \
 --gas-price 1000000000 \
 --legacy
 
-✅  [Success] Hash: 0xd4f9f227fb19afbafa5a4ba4477e246a357b9ab3b5b943387d0f99344a3f5dba
-Contract Address: 0xd06ec405eb48a7c9317C3982f4BD3B553FF9403c
+✅  [Success] Hash: 0xb0d40220fc94ddd44c92ed87eb368d51b4e822c674c56a0d525a9ade55494e43
+Contract Address: 0xDBe0a70D709Fdb7C2DFb75A0D2dE7F15FEE4A590
 
+0x6915Dad8b70E1f6AC72731fF2f1CE8537D150b67
 
-##### 88882
-✅  [Success] Hash: 0xd2fa82dbdfd387b5db41fe91f86444e034a615e3ccdf928b2f40779ed1a50f8b
-Contract Address: 0x420c3231B1E099b2FDF0B0ebC3972278aaE0eBAE
+========== SET_CONTROLLER_ADDRESS =================
+cast send \
+  "$TICKET_NFT_ADDRESS" \
+  "setController(address)" \
+  "$CONTROLLER_ADDRESS" \
+  --private-key "$PRIVATE_KEY" \
+  --rpc-url "$CHILIZ_RPC"
+
+========= verifica controller address ==========
+cast call "$TICKET_NFT_ADDRESS" "controller()(address)" --rpc-url "$CHILIZ_RPC"

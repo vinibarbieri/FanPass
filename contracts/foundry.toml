@@ -6,5 +6,8 @@ libs = ["lib"]
 [rpc_endpoints]
 chiliz-spicy = "${CHILIZ_RPC}"
 
+# foundry.toml
+solc-version = "0.8.23"
+
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
