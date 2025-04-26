@@ -1,4 +1,4 @@
-# 📄 Marketplace Smart Contract - Guia de Uso
+# 📄 Marketplace Smart Contract - Guia Atualizado
 
 Este contrato permite listar, vender e alugar NFTs da coleção **TicketNFT**, além de gerenciar taxas de plataforma e royalties para clubes.
 
@@ -16,24 +16,24 @@ Este contrato permite listar, vender e alugar NFTs da coleção **TicketNFT**, a
 ## 🏛️ Estrutura Principal
 
 - **ticketNFT** (`address`) → Endereço do contrato de NFTs (TicketNFT).
-- **platformFeeBps** (`uint96`) → Taxa de plataforma em basis points (500 = 5%).
-- **platformReceiver** (`address`) → Quem recebe as taxas de plataforma.
+- **platformFeeBps** (`uint96`) → Taxa de plataforma em basis points (500 = 5% padrão).
+- **platformReceiver** (`address`) → Destinatário das taxas de plataforma.
 - **fanTokens** (`clubId => address`) → Token ERC20 usado para cada clube.
-- **clubReceivers** (`clubId => address`) → Quem recebe a parte do clube.
-- **allowedExecutors** (`address => bool`) → Endereços autorizados a executar certas funções administrativas (ex.: saque de NFTs alugados expirados).
+- **clubReceivers** (`clubId => address`) → Destinatário dos royalties dos clubes.
+- **allowedExecutors** (`address => bool`) → Endereços autorizados a sacar NFTs alugados após expiração.
 
 ---
 
-## 📜 Funções públicas principais
+## 📜 Funções Públicas Principais
 
 ### Venda
 
 | Função | Quem pode chamar | Descrição |
 |:---|:---|:---|
 | `listForSale(tokenId, price)` | Proprietário do NFT | Lista um NFT para venda |
-| `editSaleListing(tokenId, price)` | Vendedor original | Edita o preço de uma venda ativa |
+| `editSaleListing(tokenId, price)` | Vendedor original | Edita o preço da venda |
 | `cancelSaleListing(tokenId)` | Vendedor original | Cancela uma venda ativa |
-| `buy(tokenId)` | Qualquer comprador | Compra o NFT listado |
+| `buy(tokenId)` | Qualquer usuário | Compra um NFT listado usando fan tokens |
 
 ---
 
@@ -42,10 +42,23 @@ Este contrato permite listar, vender e alugar NFTs da coleção **TicketNFT**, a
 | Função | Quem pode chamar | Descrição |
 |:---|:---|:---|
 | `listForRent(tokenId, pricePerDay, maxDuration, minDuration)` | Proprietário do NFT | Lista um NFT para aluguel |
-| `editRentListing(tokenId, pricePerDay, maxDuration, minDuration)` | Proprietário original | Edita os termos de aluguel |
+| `editRentListing(tokenId, pricePerDay, maxDuration, minDuration)` | Proprietário original | Edita termos de aluguel |
 | `cancelRentListing(tokenId)` | Proprietário original | Cancela uma listagem de aluguel |
-| `rent(tokenId, durationDays)` | Qualquer usuário | Aluga um NFT para determinado número de dias |
+| `rent(tokenId, durationDays)` | Qualquer usuário | Aluga um NFT por determinado número de dias |
 | `withdrawRentedNFT(tokenId)` | Dono, inquilino ou executor autorizado | Retira o NFT do Marketplace após o aluguel expirar |
+
+---
+
+### Consulta de Listagens
+
+| Função | Retorno | Descrição |
+|:---|:---|:---|
+| `getActiveListings(tokenId)` | (SaleListing, RentListing) | Retorna info de venda e aluguel de um token |
+| `getActiveSaleListings()` | SaleListing[] | Lista todos os NFTs à venda |
+| `getActiveRentListings()` | RentListing[] | Lista todos os NFTs para aluguel |
+| `getActiveRentInfo(tokenId)` | RentInfo | Retorna detalhes do aluguel ativo de um NFT |
+| `getPriceToRent(tokenId, daysCount)` | uint256 | Calcula o preço de aluguel para `daysCount` dias |
+| `isRentalActive(tokenId)` | bool | Verifica se o aluguel está ativo |
 
 ---
 
@@ -54,93 +67,121 @@ Este contrato permite listar, vender e alugar NFTs da coleção **TicketNFT**, a
 | Função | Quem pode chamar | Descrição |
 |:---|:---|:---|
 | `setFanToken(clubId, tokenAddress)` | Owner | Define o fan token de um clube |
+| `getFanToken(clubId)` | Owner | Consulta o fan token de um clube |
 | `setClubReceiver(clubId, receiverAddress)` | Owner | Define o receiver de royalties do clube |
-| `setPlatformFee(feeBps)` | Owner | Altera a taxa da plataforma (máx. 10%) |
-| `setPlatformReceiver(receiverAddress)` | Owner | Altera o receiver da taxa de plataforma |
-| `setExecutors(executor, allowed)` | Owner | Define se um endereço pode ser executor autorizado |
+| `getClubReceiver(clubId)` | Owner | Consulta o receiver do clube |
+| `setPlatformFee(bps)` | Owner | Define a taxa da plataforma (0 < fee ≤ 10%) |
+| `setPlatformReceiver(receiverAddress)` | Owner | Define o receiver da taxa da plataforma |
+| `setExecutors(executor, allowed)` | Owner | Autoriza ou remove autorização de executores |
+| `setOwner(newOwner)` | Owner | Transfere a propriedade do contrato |
 
 ---
 
-## 📦 Dados auxiliares disponíveis
+## 📦 Estruturas Internas
 
-| Função | Retorno |
-|:---|:---|
-| `getFanToken(clubId)` | Endereço do fan token do clube |
-| `getClubReceiver(clubId)` | Endereço do receiver de royalties do clube |
-| `getPlatformFee()` | Taxa da plataforma atual |
-| `getPlatformReceiver()` | Receiver atual da taxa da plataforma |
-| `getOwner()` | Endereço do dono do contrato |
-| `getActiveRentInfo(tokenId)` | Informações sobre aluguel ativo do NFT |
-| `getActiveListings(tokenId)` | Retorna as informações de venda e aluguel atuais de um NFT |
-| `getPriceToRent(tokenId, daysCount)` | Calcula o custo para alugar um NFT por `daysCount` dias |
-| `isRentalActive(tokenId)` | Verifica se o aluguel de um NFT ainda está ativo |
+### SaleListing
+```solidity
+struct SaleListing {
+    uint256 tokenId;
+    address seller;
+    uint256 price;
+    bool active;
+    uint256 index;
+}
+```
+Informações de uma venda ativa.
 
 ---
 
-## 🔐 Modificadores e Proteções
+### RentListing
+```solidity
+struct RentListing {
+    uint256 tokenId;
+    address owner;
+    uint256 pricePerDay;
+    uint256 maxDuration;
+    uint256 minDuration;
+    bool active;
+    uint256 index;
+}
+```
+Informações de uma listagem para aluguel.
 
-- Todas funções de transferência são protegidas por **`nonReentrant`** (protege contra ataques de reentrância).
-- Funções administrativas usam **`onlyOwner`**.
-- Vários `require` e `custom errors` protegem a lógica (ex.: `NotOwner()`, `InvalidPrice()`, `AlreadyListed()`).
+---
+
+### RentInfo
+```solidity
+struct RentInfo {
+    uint256 tokenId;
+    address owner;
+    address renter;
+    uint256 expiresAt;
+    bool active;
+}
+```
+Informações de um aluguel ativo.
+
+---
+
+## 🔐 Segurança
+
+- Todas operações críticas são protegidas com **`nonReentrant`** (proteção contra reentrância).
+- Controle rigoroso de propriedade via **`onlyOwner`**.
+- **Custom Errors** foram usados para otimizar gas e tornar falhas mais claras (ex.: `InvalidPrice()`, `NotOwner()`, `AlreadyListed()`).
+- Todas transferências de tokens e NFTs estão envoltas em `try-catch` com reembolso garantido em caso de erro.
 
 ---
 
 ## ⚙️ Fluxo de Transações
 
-1. **Vender**:
-   - `listForSale` → `buy`
-2. **Alugar**:
-   - `listForRent` → `rent` → `withdrawRentedNFT` (após expiração)
-
-Todas as transações envolvendo fan tokens:
-- Retêm taxas de plataforma e de clube automaticamente.
-- Garantem o reembolso ao comprador caso algo dê errado durante o `safeTransferFrom`.
-
----
-
-## 📢 Observações importantes
-
-- A transferência de NFTs só acontece se todas as condições forem atendidas.
-- Se a transferência de NFT falhar, o comprador é **automaticamente reembolsado**.
-- O Marketplace precisa ser aprovado pelo `TicketNFT` antes de listar/alugar NFTs.
+1. **Venda**:
+   - `listForSale(tokenId, price)`
+   - `buy(tokenId)` → marketplace transfere NFT + distribui tokens ao vendedor, clube e plataforma.
+2. **Aluguel**:
+   - `listForRent(tokenId, pricePerDay, maxDuration, minDuration)`
+   - `rent(tokenId, durationDays)` → marketplace transfere NFT temporariamente para si mesmo.
+   - `withdrawRentedNFT(tokenId)` → NFT é devolvido ao dono após aluguel expirar.
 
 ---
 
-# 📚 Exemplo de Interação com Web3
+## 📢 Eventos Emitidos
+
+| Evento | Quando é emitido |
+|:---|:---|
+| `NFTListedForSale(tokenId, seller, price)` | Quando um NFT é listado para venda |
+| `SaleListingEdited(tokenId, seller, price)` | Quando a venda é editada |
+| `NFTSold(tokenId, buyer, seller, price)` | Quando o NFT é vendido |
+| `NFTListedForRent(tokenId, owner, pricePerDay, maxDuration, minDuration)` | Quando um NFT é listado para aluguel |
+| `RentListingEdited(tokenId, owner, pricePerDay, maxDuration, minDuration)` | Quando o aluguel é editado |
+| `NFTRented(tokenId, renter, owner, durationDays, pricePerDay)` | Quando um NFT é alugado |
+| `SaleListingCancelled(tokenId)` | Quando uma venda é cancelada |
+| `RentListingCancelled(tokenId)` | Quando um aluguel é cancelado |
+
+---
+
+## 📚 Exemplo de Integração Web3
 
 ```javascript
 const marketplace = new web3.eth.Contract(marketplaceAbi, marketplaceAddress);
 
-// Listar para venda
+// Listar um NFT para venda
 await marketplace.methods.listForSale(tokenId, priceInWei).send({ from: userAddress });
 
-// Comprar NFT
+// Comprar um NFT
 await marketplace.methods.buy(tokenId).send({ from: userAddress });
+
+// Listar um NFT para aluguel
+await marketplace.methods.listForRent(tokenId, pricePerDayInWei, maxDays, minDays).send({ from: userAddress });
+
+// Alugar um NFT
+await marketplace.methods.rent(tokenId, durationDays).send({ from: userAddress });
 ```
 
 ---
 
-# 🛡️ Eventos emitidos
+# 📌 Observações Importantes
 
-| Evento | Quando é emitido |
-|:---|:---|
-| `NFTListedForSale` | Quando um NFT é listado para venda |
-| `SaleListingEdited` | Quando o preço da venda é editado |
-| `NFTSold` | Quando um NFT é vendido |
-| `NFTListedForRent` | Quando um NFT é listado para aluguel |
-| `RentListingEdited` | Quando o preço ou duração do aluguel é alterado |
-| `NFTRented` | Quando um NFT é alugado |
-| `SaleListingCancelled` | Quando uma venda é cancelada |
-| `RentListingCancelled` | Quando um aluguel é cancelado |
-
----
-
-# 📌 Conclusão
-
-Este Marketplace foi desenhado para:
-
-- **Comprar e alugar NFTs de temporada de futebol**.
-- **Cobrar taxas automáticas para a plataforma e os clubes**.
-- **Ter segurança em todas as operações** (transações revertidas, reembolsos automáticos, proteções de reentrância).
-
-É ideal para integrar facilmente com **frontends Web3** como React, Next.js, etc.
+- O NFT precisa estar aprovado (`approve`) para o Marketplace realizar transferências.
+- Se a transferência de NFT falhar por qualquer motivo, o comprador é **automaticamente reembolsado**.
+- As taxas são divididas entre o **clube** e a **plataforma** automaticamente nas vendas e nos aluguéis.
+- Tokens e NFTs são transferidos apenas se **todas as condições forem satisfeitas**.
