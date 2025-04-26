@@ -108,9 +108,18 @@ contract Marketplace is Ownable, ReentrancyGuard {
         fanTokens[clubId] = token;
     }
 
+    function getFanToken(uint256 clubId) external view returns (address) {
+        return fanTokens[clubId];
+    }
+
     function setClubReceiver(uint256 clubId, address receiver) external onlyOwner {
         clubReceivers[clubId] = receiver;
     }
+
+    function getClubReceiver(uint256 clubId) external view returns (address) {
+        return clubReceivers[clubId];
+    }
+
 
     function setPlatformFee(uint96 bps) external onlyOwner {
         if (bps == 0 || bps > 1000) {
@@ -198,9 +207,13 @@ contract Marketplace is Ownable, ReentrancyGuard {
         if(ITicketNFT(ticketNFT).ownerOf(tokenId) != listing.seller) {
             revert NotOwner();
         }
-        if(ITicketNFT(ticketNFT).getApproved(tokenId) != address(this)) {
+        if (
+            ITicketNFT(ticketNFT).getApproved(tokenId) != address(this) &&
+            !ITicketNFT(ticketNFT).isApprovedForAll(ITicketNFT(ticketNFT).ownerOf(tokenId), address(this))
+        ) {
             revert MarketplaceNotApproved();
         }
+
 
         (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
         IERC20 token = IERC20(fanTokens[clubId]);
@@ -311,9 +324,13 @@ contract Marketplace is Ownable, ReentrancyGuard {
         (uint256 clubId,,,) = ITicketNFT(ticketNFT).getPassInfo(tokenId);
         IERC20 token = IERC20(fanTokens[clubId]);
 
-        if(ITicketNFT(ticketNFT).getApproved(tokenId) != address(this)) {
+        if (
+            ITicketNFT(ticketNFT).getApproved(tokenId) != address(this) &&
+            !ITicketNFT(ticketNFT).isApprovedForAll(ITicketNFT(ticketNFT).ownerOf(tokenId), address(this))
+        ) {
             revert MarketplaceNotApproved();
         }
+
 
         uint256 buyerBalance = token.balanceOf(msg.sender);
         if(buyerBalance < listing.pricePerDay * durationDays) {

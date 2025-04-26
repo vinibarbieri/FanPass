@@ -50,9 +50,22 @@ cast call "$TICKET_NFT_ADDRESS" "controller()(address)" --rpc-url "$CHILIZ_RPC"
 ```bash
 cast send "$TICKET_NFT_ADDRESS" \
   "setApprovalForAll(address,bool)" \
-  "$CONTROLLER_ADDRESS" true \
+  "$ACCOUNT3_ADDRESS" true \
   --rpc-url "$CHILIZ_RPC" \
   --private-key "$PRIVATE_KEY_CONTA_PRINCIPAL" \
+  --legacy
+```
+
+---
+
+## Approve
+
+```bash
+cast send "$TICKET_NFT_ADDRESS" \
+  "approve(address,uint256)" \
+  "$MARKETPLACE_ADDRESS" 7 \
+  --private-key "$PRIVATE_KEY_TEST_ACCOUNT" \
+  --rpc-url "$CHILIZ_RPC" \
   --legacy
 ```
 
@@ -124,11 +137,21 @@ cast send "$MARKETPLACE_ADDRESS" \
 ```bash
 cast send "$MARKETPLACE_ADDRESS" \
   "buy(uint256)" \
-  $TOKEN_ID \
+  7 \
   --rpc-url "$CHILIZ_RPC" \
-  --private-key "$PRIVATE_KEY" \
+  --private-key "$PRIVATE_KEY_CONTA_PRINCIPAL" \
   --legacy
 ```
+
+---
+
+## Verificar se Marketplace está Aprovado 
+```bash
+  cast call "$TICKET_NFT_ADDRESS" \
+  "isApprovedForAll(address,address)(bool)" \
+  "$TEST_ACCOUNT_ADDRESS" "$MARKETPLACE_ADDRESS" \
+  --rpc-url "$CHILIZ_RPC"
+  ```
 
 ---
 
@@ -180,10 +203,34 @@ cast send "$MARKETPLACE_ADDRESS" \
 ```bash
 cast send "$MARKETPLACE_ADDRESS" \
   "setFanToken(uint256,address)" \
-  1 \
+  7 \
   "$FANTOKEN_ADDRESS" \
   --rpc-url "$CHILIZ_RPC" \
   --private-key "$PRIVATE_KEY_TEST_ACCOUNT" \
+  --legacy
+```
+
+---
+
+## Ver Endereço do ClubeReceiver
+
+```bash
+cast call "$MARKETPLACE_ADDRESS" \
+  "getClubReceiver(uint256)(address)" \
+  7 \
+  --rpc-url "$CHILIZ_RPC"
+```
+
+---
+
+## Definir Endereço do ClubeReceiver
+
+```bash
+cast send "$MARKETPLACE_ADDRESS" \
+  "setClubReceiver(uint256,address)" \
+  7 "$ACCOUNT3_ADDRESS" \
+  --private-key "$PRIVATE_KEY_OWNER" \
+  --rpc-url "$CHILIZ_RPC" \
   --legacy
 ```
 
@@ -216,9 +263,51 @@ cast call "$MARKETPLACE_ADDRESS" \
 ```bash
 cast send "$FANTOKEN_ADDRESS" \
   "mint(address,uint256)" \
-  "$TEST_ACCOUNT_ADDRESS" \
+  "$CONTA_PRINCIPAL_ADDRESS" \
   1000000000 \
   --rpc-url "$CHILIZ_RPC" \
+  --private-key "$PRIVATE_KEY_CONTA_PRINCIPAL" \
+  --legacy
+```
+
+---
+
+## Approve Transferir Fantoken
+```bash
+cast send "$FANTOKEN_ADDRESS" \
+  "approve(address,uint256)" \
+  "$MARKETPLACE_ADDRESS" \
+  1000000000000000000000000 \
+  --private-key "$PRIVATE_KEY_CONTA_PRINCIPAL" \
+  --rpc-url "$CHILIZ_RPC" \
+  --legacy
+```
+
+---
+
+## VERTIFICAR SALDO
+
+```bash
+cast call "$FANTOKEN_ADDRESS" "balanceOf(address)(uint256)" "$CONTA_PRINCIPAL_ADDRESS" --rpc-url "$CHILIZ_RPC"
+```
+
+---
+
+## VERIFICAR SE A CONTA AUTORIZOU O MARKETPLACE A GASTAR TOKENS
+
+```bash
+cast call "$FANTOKEN_ADDRESS" "allowance(address,address)(uint256)" "$CONTA_PRINCIPAL_ADDRESS" "$MARKETPLACE_ADDRESS" --rpc-url "$CHILIZ_RPC"
+```
+
+---
+
+## Transferir fantoken
+
+```bash
+cast send "$FANTOKEN_ADDRESS" \
+  "transfer(address,uint256)" \
+  "$CONTA_PRINCIPAL_ADDRESS" 1000 \
   --private-key "$PRIVATE_KEY_TEST_ACCOUNT" \
+  --rpc-url "$CHILIZ_RPC" \
   --legacy
 ```
