@@ -4,6 +4,21 @@ import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import axios from "axios";
 
+// Função para obter o gradiente baseado na cor do clube
+const getClubGradient = (clubId) => {
+  const gradients = {
+    1: "linear-gradient(180deg, #ec1c24, #9c1c1c)", // SP
+    2: "linear-gradient(180deg, #f20000, #9b0000)", // Mengo
+    3: "linear-gradient(180deg, #1a1a1a, #000000)", // Vasco
+    4: "linear-gradient(180deg, #006437, #004d2c)", // Palmeiras
+    5: "linear-gradient(180deg, #9e1b32, #7a0f23)", // Internacional
+    6: "linear-gradient(180deg, #009c3b, #007a2d)", // Fluminense
+    7: "linear-gradient(180deg, #1a1a1a, #000000)", // Corinthians
+  };
+
+  return gradients[clubId] || "linear-gradient(180deg, #333333, #111111)"; // cor padrão
+};
+
 const MyTicketsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -161,6 +176,9 @@ const MyTicketsPage = () => {
                         src={ticket.image}
                         alt={ticket.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        style={{
+                          background: getClubGradient(ticket.clubId), // Aplica o gradiente aqui
+                        }}
                       />
                     </div>
 
@@ -219,21 +237,21 @@ const MyTicketsPage = () => {
                     <div className="grid grid-cols-3 gap-2 mt-4">
                       <button
                         onClick={(e) => handleUseTicket(ticket.tokenId, e)}
-                        className="bg-transparent border border-vermelho hover:bg-green-900/30 py-2 px-2 text-xs rounded-lg transition-all flex items-center justify-center gap-1"
+                        className="border text-white py-2 px-4 rounded-full text-xs font-semibold"
                       >
-                        <span>Usar</span>
+                        Usar
                       </button>
                       <button
                         onClick={(e) => handleSellTicket(ticket.tokenId, e)}
-                        className="bg-transparent border-vermelho border hover:bg-yellow-900/30 py-2 px-2 text-xs rounded-lg transition-all flex items-center justify-center gap-1"
+                        className="border text-white py-2 px-4 rounded-full text-xs font-semibold"
                       >
-                        <span>Vender</span>
+                        Vender
                       </button>
                       <button
                         onClick={(e) => handleRentTicket(ticket.tokenId, e)}
-                        className="bg-transparent border-vermelho border hover:bg-blue-900/30 py-2 px-2 text-xs rounded-lg transition-all flex items-center justify-center gap-1"
+                        className="border text-white py-2 px-4 rounded-full text-xs font-semibold"
                       >
-                        <span>Alugar</span>
+                        Alugar
                       </button>
                     </div>
                   </div>
