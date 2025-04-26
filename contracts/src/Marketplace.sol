@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
-// ADICIONAR FUNCAO DE MINTAR
-
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -24,6 +22,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
         address seller;
         uint256 price;
         bool active;
+        uint256 index;
     }
 
     struct RentListing {
@@ -33,6 +32,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
         uint256 maxDuration; // in days
         uint256 minDuration; // in days
         bool active;
+        uint256 index;
     }
 
     struct RentInfo {
@@ -55,6 +55,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
     mapping(uint256 => SaleListing) public saleListings;
     mapping(uint256 => RentListing) public rentListings;
 
+    uint256[] public activeSaleTokenIds;
+    uint256[] public activeRentTokenIds;
+    
     // clubId => fan token address
     mapping(uint256 => address) public fanTokens;
 
@@ -105,16 +108,8 @@ contract Marketplace is Ownable, ReentrancyGuard {
         fanTokens[clubId] = token;
     }
 
-    function getFanToken(uint256 clubId) external view returns (address) {
-        return fanTokens[clubId];
-    }
-
     function setClubReceiver(uint256 clubId, address receiver) external onlyOwner {
         clubReceivers[clubId] = receiver;
-    }
-
-    function getClubReceiver(uint256 clubId) external view returns (address) {
-        return clubReceivers[clubId];
     }
 
     function setPlatformFee(uint96 bps) external onlyOwner {
@@ -124,24 +119,12 @@ contract Marketplace is Ownable, ReentrancyGuard {
         platformFeeBps = bps;
     }
 
-    function getPlatformFee() external view returns (uint96) {
-        return platformFeeBps;
-    }
-
     function setPlatformReceiver(address receiver) external onlyOwner {
         platformReceiver = receiver;
     }
 
-    function getPlatformReceiver() external view returns (address) {
-        return platformReceiver;
-    }
-
     function setOwner(address newOwner) external onlyOwner {
         transferOwnership(newOwner);
-    }
-
-    function getOwner() external view returns (address) {
-        return owner();
     }
 
     function getActiveRentInfo(uint256 tokenId) external view returns (RentInfo memory) {
@@ -167,8 +150,13 @@ contract Marketplace is Ownable, ReentrancyGuard {
             tokenId: tokenId,
             seller: msg.sender,
             price: price,
-            active: true
+            active: true,
+            index: activeSaleTokenIds.length
+
         });
+        
+        // Add tokenId to active sale list
+        activeSaleTokenIds.push(tokenId);
 
         emit NFTListedForSale(tokenId, msg.sender, price);
     }
@@ -194,6 +182,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
         }
 
         delete saleListings[tokenId];
+        
+        // Remove tokenId from active sale list
+        _removeFromActiveSaleList(tokenId);
 
         emit SaleListingCancelled(tokenId);
     }
@@ -272,8 +263,13 @@ contract Marketplace is Ownable, ReentrancyGuard {
             pricePerDay: pricePerDay,
             maxDuration: maxDuration,
             minDuration: minDuration,
-            active: true
+            active: true,
+            index: activeRentTokenIds.length
+
         });
+        
+        // Add tokenId to active rent list
+        activeRentTokenIds.push(tokenId);
 
         emit NFTListedForRent(tokenId, msg.sender, pricePerDay, maxDuration, minDuration);
     }
@@ -400,6 +396,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
         }
 
         delete rentListings[tokenId];
+        
+        // Remove tokenId from active rent list
+        _removeFromActiveRentList(tokenId);
 
         emit RentListingCancelled(tokenId);
     }
@@ -423,8 +422,53 @@ contract Marketplace is Ownable, ReentrancyGuard {
         delete saleListings[tokenId];
         delete rentListings[tokenId];
         delete activeRents[tokenId];
+        
+        // Remove from active lists
+        _removeFromActiveSaleList(tokenId);
+        _removeFromActiveRentList(tokenId);
+    }
+    
+    function _removeFromActiveSaleList(uint256 tokenId) private {
+        uint256 index = saleListings[tokenId].index;
+        uint256 lastTokenId = activeSaleTokenIds[activeSaleTokenIds.length - 1];
+
+        activeSaleTokenIds[index] = lastTokenId;
+        saleListings[lastTokenId].index = index;
+
+        activeSaleTokenIds.pop();
+        delete saleListings[tokenId];
     }
 
+    
+    function _removeFromActiveRentList(uint256 tokenId) private {
+        uint256 index = rentListings[tokenId].index;
+        uint256 lastTokenId = activeRentTokenIds[activeRentTokenIds.length - 1];
 
+        activeRentTokenIds[index] = lastTokenId;
+        rentListings[lastTokenId].index = index;
+
+        activeRentTokenIds.pop();
+        delete rentListings[tokenId];
+    }
+
+    function getActiveSaleListings() external view returns (SaleListing[] memory) {
+        SaleListing[] memory listings = new SaleListing[](activeSaleTokenIds.length);
+        
+        for (uint256 i = 0; i < activeSaleTokenIds.length; i++) {
+            listings[i] = saleListings[activeSaleTokenIds[i]];
+        }
+        
+        return listings;
+    }
+    
+    function getActiveRentListings() external view returns (RentListing[] memory) {
+        RentListing[] memory listings = new RentListing[](activeRentTokenIds.length);
+        
+        for (uint256 i = 0; i < activeRentTokenIds.length; i++) {
+            listings[i] = rentListings[activeRentTokenIds[i]];
+        }
+        
+        return listings;
+    }
 
 }

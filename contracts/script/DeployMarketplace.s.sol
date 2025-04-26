@@ -7,7 +7,7 @@ import "../src/Marketplace.sol";
 contract DeployMarketplace is Script {
     function run() external {
         address ticketNFT = vm.envAddress("TICKET_NFT_ADDRESS");
-        address platformReceiver = vm.envAddress("PLATFORM_RECEIVER");
+        address platformReceiver = vm.envAddress("CONTA_PRINCIPAL_ADDRESS");
 
         vm.startBroadcast();
 
