@@ -35,9 +35,6 @@ cast send \
   --legacy
 ```
 
-cast nonce "$TEST_ACCOUNT_ADDRESS" --rpc-url "$CHILIZ_RPC"
-
-
 ---
 
 ## Verificar Controller Address
@@ -78,6 +75,7 @@ cast send "$TICKET_NFT_ADDRESS" \
 ```
 
 ---
+
 # Marketplace.sol
 
 ## DEPLOY Marketplace.sol
