@@ -5,6 +5,7 @@ import ProfilePage from "./pages/ProfilePage";
 import PurchasePage from "./pages/PurchasePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import MyTicketsPage from "./pages/MyTicketsPage";
 import Home from "./pages/Home"; // Página aberta
 import { Web3Provider } from "./context/Web3Context";
 
@@ -40,6 +41,10 @@ const App = () => {
             <Route
               path="/purchase/:ticketId"
               element={<ProtectedRoute element={<PurchasePage />} />}
+            />
+            <Route
+              path="/meus-ingressos"
+              element={<ProtectedRoute element={<MyTicketsPage />} />}
             />
           </Routes>
         </AuthProvider>

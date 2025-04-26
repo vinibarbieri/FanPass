@@ -2,18 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes gradientAnimation {
+@keyframes gradientMove {
   0% {
-    background-position: 0% 50%;
+    background-position: 200% 0%;
   }
   50% {
-    background-position: 100% 50%;
+    background-position: 0% 100%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 200% 0%;
   }
 }
 
-.animate-gradient-x {
-  animation: gradientAnimation 15s ease infinite;
+.animate-gradient-border {
+  background: linear-gradient(45deg, #ff595c, #ff4d4d, #b80000, #f7b7a3);
+  background-size: 800% 800%; /* Aumentei o tamanho do gradiente para uma transição mais suave */
+  border-radius: 1rem;
+  animation: gradientMove 6s ease-in-out infinite; /* Tornando o movimento mais suave e lento */
+  border: solid 4px transparent;
+  box-shadow: 0 0 20px rgba(255, 89, 92, 0.8), 0 0 30px rgba(255, 89, 92, 0.6); /* Intensificando o efeito de neon */
 }

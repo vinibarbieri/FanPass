@@ -16,7 +16,7 @@ const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("comprar");
 
-  const ticketIds = [0, 1, 2, 3, 4, 5, 6];
+  const ticketIds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   useEffect(() => {
     const fetchTickets = async () => {

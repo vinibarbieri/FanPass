@@ -57,6 +57,31 @@ class TicketController {
       return res.status(500).json({ error: "Internal server error" });
     }
   }
+  // Adicione este método ao TicketController
+  async getTicketsByOwner(req, res) {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
+
+      const tickets = await this.ticketService.getTicketsByOwner(userId);
+
+      return res.status(200).json({
+        success: true,
+        count: tickets.length,
+        tickets,
+      });
+    } catch (error) {
+      console.error(`Error fetching user tickets: ${error.message}`);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to get tickets from blockchain",
+        details: error.message,
+      });
+    }
+  }
 }
 
 module.exports = TicketController;

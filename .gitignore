@@ -15,3 +15,5 @@ docs/
 
 contracts/lib
 contracts/broadcast
+
+.DS_Store

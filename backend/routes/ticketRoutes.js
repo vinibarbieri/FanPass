@@ -9,5 +9,9 @@ router.post(
   "/:tokenId/details",
   ticketController.setTicketDetails.bind(ticketController)
 );
+router.get(
+  "/:userId/tickets",
+  ticketController.getTicketsByOwner.bind(ticketController)
+);
 
 module.exports = router;

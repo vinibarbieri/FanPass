@@ -9,7 +9,6 @@ class UserService {
       if (existingUser) {
         throw new Error("Email or CPF already in use");
       }
-
       let finalPublicKey;
       if (walletType === "generated") {
         // Gerar a carteira no backend

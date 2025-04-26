@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const ticketRoutes = require("./routes/ticketRoutes");
 const userRoutes = require("./routes/userRoutes");
+const marketplaceRoutes = require("./routes/marketplaceRoutes");
 
 class App {
   constructor() {
@@ -38,8 +39,7 @@ class App {
   setupRoutes() {
     this.app.use("/ticket", ticketRoutes);
     this.app.use("/users", userRoutes);
-
-
+    this.app.use("/marketplace", marketplaceRoutes);
   }
 
   async setupDatabase() {

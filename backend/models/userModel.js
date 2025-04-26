@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   cpf: { type: String, unique: true },
-  publicKey: { type: String, unique: true, required: true }, // Agora é obrigatório e único
+  publicKey: { type: String, unique: false, required: false }, // Agora é obrigatório e único
 });
 
 // método de comparação de senha
