@@ -9,7 +9,7 @@
 
 ---
 
-## DEPLOY TICKETNFT
+## DEPLOY TicketNFT.sol
 
 ```bash
 forge script script/Deploy.s.sol:DeployTicketNFT \
@@ -56,7 +56,7 @@ cast send "$TICKET_NFT_ADDRESS" \
 
 ---
 
-## DEPLOY MARKETPLACE.sol
+## DEPLOY Marketplace.sol
 
 ```bash
 forge script script/DeployMarketplace.s.sol:DeployMarketplace \
