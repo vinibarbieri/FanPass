@@ -78,7 +78,7 @@ const TicketCard = ({ ticket }) => {
 
         <div className="flex justify-between text-xs text-gray-400 mt-4">
           <div>
-            <p className="uppercase tracking-widest">FanTokens</p>
+            <p className="uppercase tracking-widest">Fan Tokens</p>
             <div className="flex items-center gap-2 text-base text-white">
               <img
                 src={getFanTokenImage(ticket.clubId)}

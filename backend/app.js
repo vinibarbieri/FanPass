@@ -23,6 +23,7 @@ class App {
           "https://gateway.pinata.cloud",
           "https://www.pinata.cloud",
           "http://localhost:5173",
+          "http://127.0.0.1:5173",
         ],
         allowedHeaders: [
           "Content-Type",
