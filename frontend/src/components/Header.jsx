@@ -1,11 +1,10 @@
-import { FiSearch, FiUser } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiSearch, FiUser } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
     <header className="fixed top-0 w-full bg-black/70 backdrop-blur-md border-b border-white/10 z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-        
         {/* Esquerda: Logo + Links */}
         <div className="flex items-center gap-6">
           {/* Logo e nome */}
@@ -19,8 +18,12 @@ const Navbar = () => {
 
           {/* Páginas */}
           <nav className="flex gap-6 text-gray-300 font-medium">
-            <Link to="/marketplace" className="hover:text-white transition">Mercado</Link>
-            <Link to="/meus-ingressos" className="hover:text-white transition">Meus Ingressos</Link>
+            <Link to="/" className="hover:text-white transition">
+              Mercado
+            </Link>
+            <Link to="/meus-ingressos" className="hover:text-white transition">
+              Meus Ingressos
+            </Link>
           </nav>
         </div>
 
@@ -39,13 +42,12 @@ const Navbar = () => {
         {/* Direita: Ícone de Perfil */}
         <div className="flex items-center gap-4">
           <Link
-            to="/perfil"
+            to="/profile"
             className="bg-[#2B2B2B] p-2 rounded-xl hover:bg-[#3B3B3B] transition"
           >
             <FiUser className="text-white text-xl" />
           </Link>
         </div>
-
       </div>
     </header>
   );

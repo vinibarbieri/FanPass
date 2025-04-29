@@ -21,7 +21,7 @@ const PurchasePage = () => {
     days: 0,
     hours: 0,
     minutes: 0,
-    seconds: 0
+    seconds: 0,
   });
   const [bidHistory, setBidHistory] = useState([
     { bidder: "0x123...789", amount: "120 SPFC", time: "há 2 horas" },
@@ -104,21 +104,23 @@ const PurchasePage = () => {
     // Mock: Leilão termina em 2 dias a partir de agora
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 2); // 2 dias a partir de agora
-    
+
     const updateTimeLeft = () => {
       const now = new Date();
       const diff = endDate - now;
-      
+
       if (diff <= 0) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const hours = Math.floor(
+        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      
+
       setTimeLeft({ days, hours, minutes, seconds });
     };
 
@@ -191,11 +193,10 @@ const PurchasePage = () => {
   return (
     <div className="min-h-screen bg-[#1A1A1A]">
       <Header />
-      
+
       {/* Main Content */}
       <div className="max-w-[1600px] mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          
           {/* Left Column - Image */}
           <div className="lg:w-1/2">
             <div className="rounded-2xl overflow-hidden bg-[#2B2B2B]">
@@ -261,19 +262,27 @@ const PurchasePage = () => {
                     <p className="text-gray-400">Leilão termina em</p>
                     <div className="flex items-center gap-3 mt-1">
                       <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
-                        <span className="text-white font-bold text-xl">{timeLeft.days}</span>
+                        <span className="text-white font-bold text-xl">
+                          {timeLeft.days}
+                        </span>
                         <span className="text-gray-400 text-sm ml-1">d</span>
                       </div>
                       <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
-                        <span className="text-white font-bold text-xl">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                        <span className="text-white font-bold text-xl">
+                          {timeLeft.hours.toString().padStart(2, "0")}
+                        </span>
                         <span className="text-gray-400 text-sm ml-1">h</span>
                       </div>
                       <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
-                        <span className="text-white font-bold text-xl">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                        <span className="text-white font-bold text-xl">
+                          {timeLeft.minutes.toString().padStart(2, "0")}
+                        </span>
                         <span className="text-gray-400 text-sm ml-1">m</span>
                       </div>
                       <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
-                        <span className="text-white font-bold text-xl">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                        <span className="text-white font-bold text-xl">
+                          {timeLeft.seconds.toString().padStart(2, "0")}
+                        </span>
                         <span className="text-gray-400 text-sm ml-1">s</span>
                       </div>
                     </div>
@@ -281,9 +290,9 @@ const PurchasePage = () => {
                   <div className="text-right">
                     <p className="text-gray-400">Lance atual</p>
                     <div className="flex items-center gap-2 justify-end mt-1">
-                      <img 
+                      <img
                         src={getFanTokenImage(ticket.clubId)}
-                        alt="FanToken" 
+                        alt="FanToken"
                         className="w-6 h-6"
                       />
                       <p className="text-white font-bold text-xl">
@@ -298,14 +307,18 @@ const PurchasePage = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">Preço Compre Agora</span>
                     <div className="flex items-center gap-2">
-                      <img 
+                      <img
                         src={getFanTokenImage(ticket.clubId)}
-                        alt="FanToken" 
+                        alt="FanToken"
                         className="w-8 h-8"
                       />
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold text-white">{fanTokenPrice}</span>
-                        <span className="text-2xl font-bold text-white">{getFanTokenSymbol(ticket.clubId)}</span>
+                        <span className="text-2xl font-bold text-white">
+                          {fanTokenPrice}
+                        </span>
+                        <span className="text-2xl font-bold text-white">
+                          {getFanTokenSymbol(ticket.clubId)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -316,9 +329,13 @@ const PurchasePage = () => {
                   <div className="flex justify-between items-center">
                     <div>
                       <span className="text-gray-400">Preço em Reais</span>
-                      <p className="text-sm text-[#FF595C] mt-1">Taxa de 15% por não usar FanToken</p>
+                      <p className="text-sm text-[#FF595C] mt-1">
+                        Taxa de 15% por não usar FanToken
+                      </p>
                     </div>
-                    <span className="text-xl font-bold text-white">R$ {cashPrice}</span>
+                    <span className="text-xl font-bold text-white">
+                      R$ {cashPrice}
+                    </span>
                   </div>
                 </div>
 
@@ -342,10 +359,15 @@ const PurchasePage = () => {
 
             {/* Histórico de Lances */}
             <div className="bg-[#2B2B2B] rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Histórico de Lances</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Histórico de Lances
+              </h3>
               <div className="space-y-4">
                 {bidHistory.map((bid, index) => (
-                  <div key={index} className="flex justify-between items-center py-2 border-b border-[#3B3B3B] last:border-0">
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-2 border-b border-[#3B3B3B] last:border-0"
+                  >
                     <div>
                       <p className="text-white font-medium">{bid.bidder}</p>
                       <p className="text-gray-400 text-sm">{bid.time}</p>
@@ -368,9 +390,9 @@ const PurchasePage = () => {
               <div>
                 <p className="text-gray-400 mb-2">Lance mínimo</p>
                 <div className="flex items-center gap-2">
-                  <img 
+                  <img
                     src={getFanTokenImage(ticket.clubId)}
-                    alt="FanToken" 
+                    alt="FanToken"
                     className="w-6 h-6"
                   />
                   <p className="text-white">
@@ -416,7 +438,9 @@ const PurchasePage = () => {
       {showPixModal && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-[#2B2B2B] p-8 rounded-2xl shadow-2xl max-w-md w-full">
-            <h2 className="text-2xl font-bold text-white mb-6">Pague com Pix</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">
+              Pague com Pix
+            </h2>
             {pixCode && (
               <div className="bg-white p-4 rounded-xl mb-6">
                 <QRCode value={pixCode} className="w-full" />
@@ -446,8 +470,10 @@ const PurchasePage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-[#2B2B2B] p-8 rounded-2xl shadow-2xl max-w-md w-full">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-white">Escolha o método de pagamento</h2>
-              <button 
+              <h2 className="text-2xl font-bold text-white">
+                Escolha o método de pagamento
+              </h2>
+              <button
                 onClick={() => setShowPaymentModal(false)}
                 className="text-gray-400 hover:text-white"
               >
@@ -463,18 +489,22 @@ const PurchasePage = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img 
+                    <img
                       src={getFanTokenImage(ticket.clubId)}
-                      alt="FanToken" 
+                      alt="FanToken"
                       className="w-10 h-10"
                     />
                     <div className="text-left">
                       <p className="text-white font-semibold">Fan Tokens</p>
-                      <p className="text-gray-400 text-sm">Pague com {getFanTokenSymbol(ticket.clubId)}</p>
+                      <p className="text-gray-400 text-sm">
+                        Pague com {getFanTokenSymbol(ticket.clubId)}
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-white font-bold">{fanTokenPrice} {getFanTokenSymbol(ticket.clubId)}</p>
+                    <p className="text-white font-bold">
+                      {fanTokenPrice} {getFanTokenSymbol(ticket.clubId)}
+                    </p>
                     <p className="text-green-500 text-sm">Melhor preço</p>
                   </div>
                 </div>
@@ -488,15 +518,17 @@ const PurchasePage = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-[#3B3B3B] rounded-lg flex items-center justify-center">
-                      <img 
-                        src="https://img.icons8.com/fluent/512/pix.png" 
-                        alt="PIX" 
+                      <img
+                        src="https://img.icons8.com/fluent/512/pix.png"
+                        alt="PIX"
                         className="w-6 h-6"
                       />
                     </div>
                     <div className="text-left">
                       <p className="text-white font-semibold">PIX</p>
-                      <p className="text-gray-400 text-sm">Pagamento instantâneo</p>
+                      <p className="text-gray-400 text-sm">
+                        Pagamento instantâneo
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -514,15 +546,19 @@ const PurchasePage = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-[#3B3B3B] rounded-lg flex items-center justify-center">
-                      <img 
-                        src="https://cdn-icons-png.flaticon.com/512/657/657076.png" 
-                        alt="Cartão" 
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/512/657/657076.png"
+                        alt="Cartão"
                         className="w-6 h-6"
                       />
                     </div>
                     <div className="text-left">
-                      <p className="text-white font-semibold">Cartão de Crédito</p>
-                      <p className="text-gray-400 text-sm">Parcele em até 12x</p>
+                      <p className="text-white font-semibold">
+                        Cartão de Crédito
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        Parcele em até 12x
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -544,4 +580,3 @@ const PurchasePage = () => {
 };
 
 export default PurchasePage;
-
