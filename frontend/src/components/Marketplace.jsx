@@ -1,11 +1,28 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TicketCard from "./TicketCard";
+import { FiSearch, FiFilter } from 'react-icons/fi';
 
 const tabs = [
   { id: "comprar", label: "Comprar" },
   { id: "alugar", label: "Alugar" },
   { id: "colecionavel", label: "Colecionáveis" },
+];
+
+const teams = [
+  { id: 1, name: "São Paulo" },
+  { id: 2, name: "Flamengo" },
+  { id: 3, name: "Vasco" },
+  { id: 4, name: "Palmeiras" },
+  { id: 5, name: "Internacional" },
+  { id: 6, name: "Fluminense" },
+  { id: 7, name: "Corinthians" },
+];
+
+const sortOptions = [
+  { id: "recent", label: "Mais recentes" },
+  { id: "price_asc", label: "Menor preço" },
+  { id: "price_desc", label: "Maior preço" },
 ];
 
 const Marketplace = () => {
@@ -15,6 +32,9 @@ const Marketplace = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("comprar");
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
+  const [showFilters, setShowFilters] = useState(false);
 
   const ticketIds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
@@ -30,13 +50,7 @@ const Marketplace = () => {
             const ticket = response.data;
             if (ticket.tokenURI) {
               try {
-                const tokenData = await axios.get(ticket.tokenURI, {
-                  headers: {
-                    // Remova qualquer header global indesejado aqui
-                    Authorization: undefined,
-                  },
-                });
-
+                const tokenData = await axios.get(ticket.tokenURI, { headers: { Authorization: undefined } });
                 return {
                   ...ticket,
                   name: tokenData.data.name,
@@ -65,80 +79,111 @@ const Marketplace = () => {
   }, []);
 
   useEffect(() => {
-    const lowerSearch = searchTerm.toLowerCase();
-    const filtered = tickets.filter(
+    let filtered = tickets.filter(
       (ticket) =>
-        ticket.name?.toLowerCase().includes(lowerSearch) &&
+        ticket.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
         ticket.type === activeTab
     );
+
+    if (selectedTeam) {
+      filtered = filtered.filter(ticket => ticket.clubId === parseInt(selectedTeam));
+    }
+
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "price_asc":
+          return (a.details?.priceFanToken || 0) - (b.details?.priceFanToken || 0);
+        case "price_desc":
+          return (b.details?.priceFanToken || 0) - (a.details?.priceFanToken || 0);
+        case "recent":
+        default:
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      }
+    });
+
     setFilteredTickets(filtered);
-  }, [searchTerm, activeTab, tickets]);
+  }, [searchTerm, activeTab, tickets, selectedTeam, sortBy]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#111111] to-[#1a1a1a] text-white px-4 py-12">
-      <div className="max-w-7xl mx-auto">
-        {/* Título */}
-        <h1 className="text-center text-4xl sm:text-5xl font-extrabold tracking-tight mb-8 text-white/90">
-          Mercado de Ingressos
-        </h1>
+    <div className="min-h-screen bg-[#111111]">
 
-        {/* Campo de busca refinado */}
-        <div className="mb-10 flex justify-center">
-          <input
-            type="text"
-            placeholder="Buscar ingresso..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full max-w-lg px-6 py-4 bg-white/10 text-white placeholder-gray-300 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-all duration-300"
-          />
-        </div>
 
-        {/* Tabs estilizadas */}
-        <div className="relative mb-6 flex justify-center">
-          <div className="flex space-x-8 border-b border-white/20">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-2 text-lg font-semibold transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? "text-red-500 border-b-4 border-red-500"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Conteúdo principal */}
+      <div className="max-w-7xl mx-auto px-4 pt-32 pb-12">
 
-      {/* Área dos tickets com fundo mais claro e largura completa */}
-      <div className="w-full rounded-2xl bg-white/15 backdrop-blur-lg p-6">
-        {loading && (
-          <p className="text-center text-lg text-gray-300 animate-pulse">
-            Carregando ingressos...
-          </p>
-        )}
-        {error && (
-          <p className="text-center text-red-400 font-medium">{error}</p>
-        )}
-
-        {!loading && !error && (
-          <>
-            {filteredTickets.length === 0 ? (
-              <p className="text-center text-gray-300">
-                Nenhum ingresso disponível nesta categoria.
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {filteredTickets.map((ticket, index) => (
-                  <TicketCard key={index} ticket={ticket} />
-                ))}
+        {/* Filtros (Time, Ordenar) */}
+        {showFilters && (
+          <div className="bg-[#202020] rounded-2xl p-6 mb-6 shadow-lg">
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
+                <label className="block text-gray-400 mb-2 text-sm">Time</label>
+                <select
+                  value={selectedTeam}
+                  onChange={(e) => setSelectedTeam(e.target.value)}
+                  className="w-full px-4 py-2 bg-[#2B2B2B] text-white rounded-xl border border-white/10 focus:outline-none focus:border-[#FF595C]"
+                >
+                  <option value="">Todos os times</option>
+                  {teams.map(team => (
+                    <option key={team.id} value={team.id}>{team.name}</option>
+                  ))}
+                </select>
               </div>
-            )}
-          </>
+
+              <div className="flex-1 min-w-[200px]">
+                <label className="block text-gray-400 mb-2 text-sm">Ordenar por</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full px-4 py-2 bg-[#2B2B2B] text-white rounded-xl border border-white/10 focus:outline-none focus:border-[#FF595C]"
+                >
+                  {sortOptions.map(option => (
+                    <option key={option.id} value={option.id}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         )}
+
+        {/* Tabs Comprar / Alugar / Colecionáveis */}
+        <div className="flex space-x-1 mb-6 bg-[#202020] rounded-xl p-1 w-fit">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-2 rounded-lg font-medium transition-all duration-300 ${
+                activeTab === tab.id
+                  ? "bg-[#FF595C] text-white"
+                  : "text-gray-400 hover:text-white hover:bg-[#2B2B2B]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Área dos tickets */}
+        <div className="bg-[#202020] rounded-2xl p-8 shadow-lg">
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF595C]"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-red-400 font-medium">{error}</p>
+            </div>
+          ) : filteredTickets.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              Nenhum ingresso encontrado.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTickets.map((ticket, index) => (
+                <TicketCard key={index} ticket={ticket} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

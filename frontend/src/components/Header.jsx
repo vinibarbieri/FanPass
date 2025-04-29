@@ -1,94 +1,54 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import LoginButton from "../components/LoginButton";
+import { FiSearch, FiUser } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
-const Header = () => {
-  const { user, logout } = useAuth();
-
+const Navbar = () => {
   return (
-    <header className="bg-[#0f0f0f] border-b border-[#222] shadow-md">
-      <div className="flex items-center justify-between max-w-7xl mx-auto px-6 py-4">
-        {/* Logo e título */}
+    <header className="fixed top-0 w-full bg-black/70 backdrop-blur-md border-b border-white/10 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+        
+        {/* Esquerda: Logo + Links */}
+        <div className="flex items-center gap-6">
+          {/* Logo e nome */}
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="FanPass" className="w-8 h-8" />
+            <span className="text-white text-lg font-bold">FanPass</span>
+          </Link>
+
+          {/* Separador */}
+          <div className="h-6 w-px bg-gray-600" />
+
+          {/* Páginas */}
+          <nav className="flex gap-6 text-gray-300 font-medium">
+            <Link to="/marketplace" className="hover:text-white transition">Mercado</Link>
+            <Link to="/meus-ingressos" className="hover:text-white transition">Meus Ingressos</Link>
+          </nav>
+        </div>
+
+        {/* Centro: Search */}
+        <div className="flex-1 mx-12">
+          <div className="relative">
+            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar ingresso..."
+              className="w-full pl-12 pr-4 py-2 bg-[#2B2B2B] text-white placeholder-gray-400 rounded-xl border border-white/10 focus:outline-none focus:border-[#FF595C] transition-all"
+            />
+          </div>
+        </div>
+
+        {/* Direita: Ícone de Perfil */}
         <div className="flex items-center gap-4">
-          <img src="/logo.png" alt="Logo" className="w-10 h-10 rounded-lg" />
-          <span className="text-white text-2xl font-bold tracking-wide">
-            FanPass
-          </span>
+          <Link
+            to="/perfil"
+            className="bg-[#2B2B2B] p-2 rounded-xl hover:bg-[#3B3B3B] transition"
+          >
+            <FiUser className="text-white text-xl" />
+          </Link>
         </div>
 
-        {/* Navegação */}
-        <nav>
-          <ul className="flex items-center gap-8 text-sm font-medium">
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `transition hover:text-gray-400 ${
-                    isActive ? "text-gray-300" : "text-white"
-                  }`
-                }
-              >
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `transition hover:text-gray-400 ${
-                    isActive ? "text-gray-300" : "text-white"
-                  }`
-                }
-              >
-                Mercado
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/meus-ingressos"
-                className={({ isActive }) =>
-                  `transition hover:text-gray-400 ${
-                    isActive ? "text-gray-300" : "text-white"
-                  }`
-                }
-              >
-                Meus Ingressos
-              </NavLink>
-            </li>
-            {user && (
-              <li>
-                <NavLink
-                  to="/profile"
-                  className={({ isActive }) =>
-                    `transition hover:text-gray-400 ${
-                      isActive ? "text-gray-300" : "text-white"
-                    }`
-                  }
-                >
-                  Meu Perfil
-                </NavLink>
-              </li>
-            )}
-          </ul>
-        </nav>
-
-        {/* Botão de Login ou Logout */}
-        <div className="ml-6">
-          {user ? (
-            <button
-              onClick={logout}
-              className="px-4 py-2 text-white bg-accent rounded-lg hover:bg-red-700 transition"
-            >
-              Sair
-            </button>
-          ) : (
-            <LoginButton />
-          )}
-        </div>
       </div>
     </header>
   );
 };
 
-export default Header;
+export default Navbar;
