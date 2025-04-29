@@ -1,0 +1,112 @@
+/* Marketplace Styles */
+.marketplace-container {
+  @apply min-h-screen bg-[#1A1A1A];
+}
+
+.marketplace-header {
+  @apply fixed top-0 left-0 right-0 z-50 bg-[#1A1A1A]/80 backdrop-blur-xl border-b border-white/5;
+}
+
+.search-input {
+  @apply w-full bg-[#2B2B2B] border border-white/5 rounded-xl px-4 py-3 pl-12 text-white placeholder-gray-400
+         focus:outline-none focus:ring-2 focus:ring-[#FF595C]/50 focus:border-transparent
+         transition-all duration-300;
+}
+
+.filter-button {
+  @apply flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2B2B2B] text-white
+         border border-white/5 hover:bg-[#3B3B3B] transition-colors duration-300;
+}
+
+.filter-panel {
+  @apply fixed top-[72px] right-0 h-[calc(100vh-72px)] w-80 bg-[#2B2B2B] border-l border-white/5
+         transform transition-transform duration-300 ease-in-out z-40 overflow-y-auto;
+}
+
+.filter-panel.open {
+  @apply translate-x-0;
+}
+
+.filter-panel.closed {
+  @apply translate-x-full;
+}
+
+.tab-button {
+  @apply px-4 py-2 text-gray-400 border-b-2 border-transparent
+         hover:text-white transition-colors duration-300;
+}
+
+.tab-button.active {
+  @apply text-white border-[#FF595C];
+}
+
+.tickets-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6;
+}
+
+/* Loading Animation */
+.loading-spinner {
+  @apply w-12 h-12 border-4 border-[#FF595C]/20 border-t-[#FF595C] rounded-full animate-spin;
+}
+
+/* Error State */
+.error-container {
+  @apply flex flex-col items-center justify-center gap-4 text-center p-8;
+}
+
+.error-icon {
+  @apply text-6xl text-[#FF595C];
+}
+
+/* Empty State */
+.empty-state {
+  @apply flex flex-col items-center justify-center gap-4 text-center p-8 text-gray-400;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Scrollbar Styles */
+.filter-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-panel::-webkit-scrollbar-track {
+  @apply bg-[#1A1A1A];
+}
+
+.filter-panel::-webkit-scrollbar-thumb {
+  @apply bg-[#3B3B3B] rounded-full;
+}
+
+.filter-panel::-webkit-scrollbar-thumb:hover {
+  @apply bg-[#4B4B4B];
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .marketplace-header {
+    @apply px-4;
+  }
+
+  .filter-panel {
+    @apply w-full;
+  }
+
+  .tickets-grid {
+    @apply p-4;
+  }
+} 

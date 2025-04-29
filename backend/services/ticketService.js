@@ -19,13 +19,6 @@ class TicketService {
 
   async getTicketInfo(tokenId) {
     try {
-      // Primeiro, tenta buscar as informações no cache
-      const cachedData = myCache.get(tokenId);
-      if (cachedData) {
-        console.log("Dados encontrados no cache");
-        return cachedData;
-      }
-
       // Se não estiver no cache, faça as requisições
       const [info, tokenURI, isValid, details] = await Promise.all([
         this.contract.getPassInfo(tokenId),

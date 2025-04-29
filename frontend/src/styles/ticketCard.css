@@ -1,0 +1,148 @@
+/* TicketCard Styles */
+.ticket-card {
+  @apply relative bg-[#2B2B2B] rounded-2xl overflow-hidden border border-white/5
+         transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl
+         hover:shadow-[#FF595C]/10 hover:border-[#FF595C]/20;
+}
+
+.ticket-image-container {
+  @apply relative aspect-[4/3] overflow-hidden;
+}
+
+.ticket-image {
+  @apply w-full h-full object-cover transition-transform duration-500
+         group-hover:scale-110;
+}
+
+.image-overlay {
+  @apply absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent
+         opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+}
+
+.ticket-type-badge {
+  @apply absolute top-4 left-4 px-3 py-1.5 rounded-full text-sm font-medium
+         bg-[#FF595C] text-white shadow-lg shadow-[#FF595C]/20
+         transform transition-transform duration-300 hover:scale-105;
+}
+
+.like-button {
+  @apply absolute top-4 right-4 p-2 rounded-full bg-black/40 backdrop-blur-sm
+         text-white/80 hover:text-[#FF595C] hover:bg-black/60
+         transform transition-all duration-300 hover:scale-110;
+}
+
+.ticket-info {
+  @apply p-4 space-y-4;
+}
+
+.ticket-title {
+  @apply text-lg font-semibold text-white truncate
+         transition-colors duration-300 hover:text-[#FF595C];
+}
+
+.ticket-details {
+  @apply text-sm text-gray-400 line-clamp-2
+         transition-colors duration-300 group-hover:text-gray-300;
+}
+
+.price-container {
+  @apply flex items-center justify-between mt-4;
+}
+
+.team-logo {
+  @apply w-8 h-8 rounded-full bg-[#3B3B3B] p-1
+         transform transition-transform duration-300 hover:scale-110;
+}
+
+.price-info {
+  @apply flex items-center gap-2;
+}
+
+.token-icon {
+  @apply w-5 h-5;
+}
+
+.price-value {
+  @apply text-lg font-bold text-white;
+}
+
+.token-symbol {
+  @apply text-sm text-gray-400;
+}
+
+.card-footer {
+  @apply flex items-center justify-between px-4 py-3 border-t border-white/5
+         bg-[#232323];
+}
+
+.time-info {
+  @apply flex items-center gap-2 text-sm text-gray-400;
+}
+
+.clock-icon {
+  @apply w-4 h-4 text-[#FF595C];
+}
+
+/* Loading State */
+.ticket-card-skeleton {
+  @apply animate-pulse;
+}
+
+.skeleton-image {
+  @apply bg-[#3B3B3B] aspect-[4/3];
+}
+
+.skeleton-text {
+  @apply h-4 bg-[#3B3B3B] rounded;
+}
+
+.skeleton-text-sm {
+  @apply h-3 bg-[#3B3B3B] rounded;
+}
+
+/* Hover Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 89, 92, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px 0 rgba(255, 89, 92, 0.2);
+  }
+}
+
+.ticket-card:hover {
+  animation: pulseGlow 2s infinite;
+}
+
+/* Like Button Animation */
+@keyframes likeAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.like-button.liked {
+  @apply text-[#FF595C];
+  animation: likeAnimation 0.3s ease-in-out;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .ticket-card {
+    @apply hover:transform-none;
+  }
+  
+  .ticket-info {
+    @apply p-3;
+  }
+  
+  .card-footer {
+    @apply px-3 py-2;
+  }
+} 
