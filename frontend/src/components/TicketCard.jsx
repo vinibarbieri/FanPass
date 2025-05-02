@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { FiClock, FiHeart } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import getClubGradient from "../../utils/getClubGradient";
+import getTokenSymbol from "../../utils/getTokenSymbol";
+import getFanTokenImage from "../../utils/getFanTokenImage";
 
 const TicketCard = ({ ticket }) => {
   const {
@@ -23,45 +26,6 @@ const TicketCard = ({ ticket }) => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
     }).format(price);
-  };
-
-  const getTeamLogo = (clubId) => {
-    const logos = {
-      1: "/sp.png",
-      2: "/mengo.png",
-      3: "/vasco.png",
-      4: "/palmeiras.png",
-      5: "/inter.png",
-      6: "/flu.png",
-      7: "/corinthians.png",
-    };
-    return logos[clubId] || "/sp.png";
-  };
-
-  const getTokenSymbol = (clubId) => {
-    const symbols = {
-      1: "SPFC",
-      2: "FLA",
-      3: "VAS",
-      4: "PAL",
-      5: "INT",
-      6: "FLU",
-      7: "COR",
-    };
-    return symbols[clubId] || "TOKEN";
-  };
-
-  const getClubGradient = (clubId) => {
-    const gradients = {
-      1: "linear-gradient(180deg, #7a0f23, #3a0a11)", // São Paulo (vermelho escuro para bordô)
-      2: "linear-gradient(180deg, #8b0000, #4b0000)", // Flamengo (vermelho sangue escuro)
-      3: "linear-gradient(180deg, #2c2c2c, #111111)", // Vasco (cinza chumbo)
-      4: "linear-gradient(180deg, #00582c, #00331b)", // Palmeiras (verde floresta fechado)
-      5: "linear-gradient(180deg, #7a1020, #400a10)", // Internacional (vinho escuro)
-      6: "linear-gradient(180deg, #007b3b, #004d23)", // Fluminense (verde escuro)
-      7: "linear-gradient(180deg, #2c2c2c, #111111)", // Corinthians (cinza escuro igual Vasco)
-    };
-    return gradients[clubId] || "linear-gradient(180deg, #2B2B2B, #1A1A1A)";
   };
 
   const formatDate = (dateString) => {
@@ -132,15 +96,6 @@ const TicketCard = ({ ticket }) => {
           <h3 className="text-white text-lg font-bold leading-tight line-clamp-2 flex-1">
             {name}
           </h3>
-          <img
-            src={getTeamLogo(clubId)}
-            alt="Team logo"
-            className="w-6 h-6 rounded-full bg-white/5 p-0.5"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "/sp.png";
-            }}
-          />
         </div>
 
         {/* Temporada */}
@@ -150,7 +105,7 @@ const TicketCard = ({ ticket }) => {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <img
-              src={getTeamLogo(clubId)}
+              src={getFanTokenImage(clubId)}
               alt="Token"
               className="w-5 h-5"
               onError={(e) => {
@@ -164,6 +119,44 @@ const TicketCard = ({ ticket }) => {
           </div>
           <span className="text-sm text-gray-400">≈ R$ {priceRealMock}</span>
         </div>
+
+        {/* Preço */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+
+            <span className="text-m text-gray-400">
+              Lance atual: <span className="text-white font-medium">{formatPrice(120)} {getTokenSymbol(1)}</span>
+            </span>
+            <img
+              src={getFanTokenImage(clubId)}
+              alt="Token"
+              className="w-3 h-3"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/sp.png";
+              }}
+            />
+          </div>
+          <span className="text-sm text-gray-400">≈ R$ {priceRealMock}</span>
+        </div>
+
+        {/* Lance Atual */}
+        {/* <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+
+            <span className="text-xs text-gray-400">
+              Lance atual: <span className="text-white font-medium">{formatPrice(120)}</span>
+            </span>
+            <img
+              src={getTeamLogo(1)}
+              alt="Token"
+              className="w-3 h-3"
+            />
+          </div>
+          <span className="text-xs text-gray-400">
+            ≈ R$ 36,00
+          </span>
+        </div> */}
 
         {/* Tempo */}
         <div className="flex items-center gap-2 text-sm text-gray-400">

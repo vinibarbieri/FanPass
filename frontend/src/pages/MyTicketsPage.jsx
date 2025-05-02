@@ -3,21 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import axios from "axios";
-
-// Função para obter o gradiente baseado na cor do clube
-const getClubGradient = (clubId) => {
-  const gradients = {
-    1: "linear-gradient(180deg, #ec1c24, #9c1c1c)", // SP
-    2: "linear-gradient(180deg, #f20000, #9b0000)", // Mengo
-    3: "linear-gradient(180deg, #1a1a1a, #000000)", // Vasco
-    4: "linear-gradient(180deg, #006437, #004d2c)", // Palmeiras
-    5: "linear-gradient(180deg, #9e1b32, #7a0f23)", // Internacional
-    6: "linear-gradient(180deg, #009c3b, #007a2d)", // Fluminense
-    7: "linear-gradient(180deg, #1a1a1a, #000000)", // Corinthians
-  };
-
-  return gradients[clubId] || "linear-gradient(180deg, #333333, #111111)";
-};
+import getClubGradient from "../../utils/getClubGradient";
 
 const MyTicketsPage = () => {
   const { user } = useAuth();
@@ -156,7 +142,7 @@ const MyTicketsPage = () => {
   return (
     <div className="min-h-screen bg-[#1A1A1A]">
       <Header />
-      <div className="max-w-[1600px] mx-auto p-6">
+      <div className="max-w-[1600px] mx-auto p-6 pt-24">
 
 
         {/* Tabs e Filtros */}
@@ -242,11 +228,10 @@ const MyTicketsPage = () => {
                       <span className="text-white">{ticket.sector || "N/I"}</span>
                     </div>
                     <div className="flex justify-between text-gray-400">
-                      <span>Validade</span>
+                      <span>Temporada</span>
                       <span className="text-white">
-                        {ticket.validUntil
-                          ? new Date(ticket.validUntil).toLocaleDateString()
-                          : "N/I"}
+                        {/* Pega o ano da temporada e limpa para apenas o ano */}
+                        {ticket.tokenData.attributes[2].value.match(/\d{4}/)?.[0] || "N/I"}
                       </span>
                     </div>
                   </div>
