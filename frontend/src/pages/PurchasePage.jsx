@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import axios from "axios";
 import { QRCode } from "react-qr-code";
+import getClubGradient from "../../utils/getClubGradient";
 
 const PurchasePage = () => {
   const { ticketId } = useParams();
@@ -47,21 +48,6 @@ const PurchasePage = () => {
     5: "INTER",
     6: "FLU",
     7: "SCCP",
-  };
-
-  // Função para obter o gradiente baseado na cor do clube
-  const getClubGradient = (clubId) => {
-    const gradients = {
-      1: "linear-gradient(180deg, #ec1c24, #9c1c1c)", // SP
-      2: "linear-gradient(180deg, #f20000, #9b0000)", // Mengo
-      3: "linear-gradient(180deg, #1a1a1a, #000000)", // Vasco
-      4: "linear-gradient(180deg, #006437, #004d2c)", // Palmeiras
-      5: "linear-gradient(180deg, #9e1b32, #7a0f23)", // Internacional
-      6: "linear-gradient(180deg, #009c3b, #007a2d)", // Fluminense
-      7: "linear-gradient(180deg, #1a1a1a, #000000)", // Corinthians
-    };
-
-    return gradients[clubId] || "linear-gradient(180deg, #333333, #111111)";
   };
 
   useEffect(() => {
@@ -195,7 +181,7 @@ const PurchasePage = () => {
       <Header />
 
       {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto px-4 py-8">
+      <div className="max-w-[1600px] mx-auto px-4 py-8 pt-24">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column - Image */}
           <div className="lg:w-1/2">
