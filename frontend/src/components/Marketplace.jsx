@@ -105,7 +105,7 @@ const Marketplace = () => {
   }, [searchTerm, activeTab, tickets, selectedTeam, sortBy]);
 
   return (
-    <div className="min-h-screen bg-[#111111]">
+    <div className="min-h-screen bg-background">
 
 
       {/* Conteúdo principal */}
@@ -113,14 +113,14 @@ const Marketplace = () => {
 
         {/* Filtros (Time, Ordenar) */}
         {showFilters && (
-          <div className="bg-[#202020] rounded-2xl p-6 mb-6 shadow-lg">
+          <div className="bg-background-secundario rounded-2xl p-6 mb-6 shadow-lg">
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <label className="block text-gray-400 mb-2 text-sm">Time</label>
                 <select
                   value={selectedTeam}
                   onChange={(e) => setSelectedTeam(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#2B2B2B] text-white rounded-xl border border-white/10 focus:outline-none focus:border-[#FF595C]"
+                  className="w-full px-4 py-2 bg-cinza text-white rounded-xl border border-white/10 focus:outline-none focus:border-vermelho"
                 >
                   <option value="">Todos os times</option>
                   {teams.map(team => (
@@ -134,7 +134,7 @@ const Marketplace = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#2B2B2B] text-white rounded-xl border border-white/10 focus:outline-none focus:border-[#FF595C]"
+                  className="w-full px-4 py-2 bg-cinza text-white rounded-xl border border-white/10 focus:outline-none focus:border-vermelho"
                 >
                   {sortOptions.map(option => (
                     <option key={option.id} value={option.id}>{option.label}</option>
@@ -146,15 +146,15 @@ const Marketplace = () => {
         )}
 
         {/* Tabs Comprar / Alugar / Colecionáveis */}
-        <div className="flex space-x-1 mb-6 bg-[#202020] rounded-xl p-1 w-fit">
+        <div className="flex space-x-1 mb-6 bg-background-secundario rounded-xl p-1 w-fit">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-2 rounded-lg font-medium transition-all duration-300 ${
                 activeTab === tab.id
-                  ? "bg-[#FF595C] text-white"
-                  : "text-gray-400 hover:text-white hover:bg-[#2B2B2B]"
+                  ? "bg-vermelho text-white"
+                  : "text-gray-400 hover:text-white hover:bg-cinza"
               }`}
             >
               {tab.label}
@@ -163,10 +163,10 @@ const Marketplace = () => {
         </div>
 
         {/* Área dos tickets */}
-        <div className="bg-[#202020] rounded-2xl p-8 shadow-lg">
+        <div className="bg-background-secundario rounded-2xl p-8 shadow-lg">
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF595C]"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-vermelho"></div>
             </div>
           ) : error ? (
             <div className="text-center py-12">

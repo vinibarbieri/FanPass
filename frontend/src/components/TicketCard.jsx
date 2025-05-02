@@ -56,7 +56,7 @@ const TicketCard = ({ ticket }) => {
   return (
     <Link
       to={`/purchase/${ticket?.details.tokenId}`}
-      className="group bg-[#2B2B2B] rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-300 border border-white/5 hover:border-[#FF595C]/50 hover:shadow-xl hover:shadow-[#FF595C]/5"
+      className="group bg-cinza rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-300 border border-white/5 hover:border-vermelho/50 hover:shadow-xl hover:shadow-vermelho/5"
     >
       {/* Imagem com fundo gradiente específico */}
       <div
@@ -84,7 +84,7 @@ const TicketCard = ({ ticket }) => {
 
         {/* Likes */}
         <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs font-medium text-white border border-white/10">
-          <FiHeart className="text-[#FF595C]" />
+          <FiHeart className="text-vermelho" />
           <span>{likes}</span>
         </div>
       </div>

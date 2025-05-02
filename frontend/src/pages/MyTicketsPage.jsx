@@ -109,9 +109,9 @@ const MyTicketsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#1A1A1A]">
+      <div className="min-h-screen bg-background">
         <Header />
-        <div className="max-w-[1600px] mx-auto p-6">
+        <div className="max-w-[1600px] mx-auto p-6 pt-24">
           <div className="flex justify-center items-center h-[60vh]">
             <div className="animate-pulse text-white text-xl">Carregando seus ingressos...</div>
           </div>
@@ -122,14 +122,14 @@ const MyTicketsPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#1A1A1A]">
+      <div className="min-h-screen bg-background">
         <Header />
-        <div className="max-w-[1600px] mx-auto p-6">
+        <div className="max-w-[1600px] mx-auto p-6 pt-24">
           <div className="flex flex-col items-center justify-center h-[60vh]">
             <p className="text-red-400 text-xl mb-4">Erro: {error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-[#FF595C] hover:bg-[#FF4C4F] text-white py-3 px-8 rounded-xl transition-all"
+              className="bg-vermelho hover:bg-[#FF4C4F] text-white py-3 px-8 rounded-xl transition-all"
             >
               Tentar novamente
             </button>
@@ -140,11 +140,9 @@ const MyTicketsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A]">
+    <div className="min-h-screen bg-background">
       <Header />
-      <div className="max-w-[1600px] mx-auto p-6 pt-24">
-
-
+      <div className="max-w-[1600px] mx-auto px-4 py-8 pt-24">
         {/* Tabs e Filtros */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex space-x-4">
@@ -158,8 +156,8 @@ const MyTicketsPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 rounded-xl font-medium transition-all ${
                   activeTab === tab.id
-                    ? "bg-[#FF595C] text-white"
-                    : "bg-[#2B2B2B] text-gray-400 hover:bg-[#3B3B3B]"
+                    ? "bg-vermelho text-white"
+                    : "bg-cinza text-gray-400 hover:bg-cinza-claro"
                 }`}
               >
                 {tab.label}
@@ -170,7 +168,7 @@ const MyTicketsPage = () => {
 
         {/* Grid de Ingressos */}
         {tickets.length === 0 ? (
-          <div className="bg-[#2B2B2B] rounded-xl p-8 text-center">
+          <div className="bg-cinza rounded-2xl p-8 text-center">
             <div className="max-w-md mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
                 Nenhum ingresso encontrado
@@ -180,7 +178,7 @@ const MyTicketsPage = () => {
               </p>
               <button
                 onClick={() => navigate("/")}
-                className="bg-[#FF595C] hover:bg-[#FF4C4F] text-white py-3 px-8 rounded-xl transition-all"
+                className="bg-vermelho hover:bg-[#FF4C4F] text-white py-3 px-8 rounded-xl transition-all"
               >
                 Explorar Ingressos
               </button>
@@ -192,7 +190,7 @@ const MyTicketsPage = () => {
               <div
                 key={ticket.tokenId}
                 onClick={() => navigate(`/ticket/${ticket.tokenId}`)}
-                className="bg-[#2B2B2B] rounded-xl overflow-hidden cursor-pointer group hover:transform hover:scale-[1.02] transition-all duration-200"
+                className="bg-cinza rounded-xl overflow-hidden cursor-pointer group hover:transform hover:scale-[1.02] transition-all duration-200"
               >
                 {/* Imagem com Gradiente */}
                 <div
@@ -217,7 +215,7 @@ const MyTicketsPage = () => {
                     <h3 className="text-white font-semibold truncate">
                       {ticket.tokenData?.attributes?.[0]?.value || ticket.name}
                     </h3>
-                    <span className="text-[#FF595C] text-sm">
+                    <span className="text-vermelho text-sm">
                       #{ticket.tokenId}
                     </span>
                   </div>
@@ -230,8 +228,7 @@ const MyTicketsPage = () => {
                     <div className="flex justify-between text-gray-400">
                       <span>Temporada</span>
                       <span className="text-white">
-                        {/* Pega o ano da temporada e limpa para apenas o ano */}
-                        {ticket.tokenData.attributes[2].value.match(/\d{4}/)?.[0] || "N/I"}
+                        {ticket.tokenData?.attributes?.[2]?.value?.match(/\d{4}/)?.[0] || "N/I"}
                       </span>
                     </div>
                   </div>
@@ -243,7 +240,7 @@ const MyTicketsPage = () => {
                         e.stopPropagation();
                         handleUseTicket(ticket.tokenId, e);
                       }}
-                      className="bg-[#3B3B3B] hover:bg-[#4B4B4B] text-white py-2 px-3 rounded-xl text-sm font-medium transition-all"
+                      className="bg-cinza-claro hover:bg-[#4B4B4B] text-white py-2 px-3 rounded-xl text-sm font-medium transition-all"
                     >
                       Usar
                     </button>
@@ -252,7 +249,7 @@ const MyTicketsPage = () => {
                         e.stopPropagation();
                         handleSellTicket(ticket.tokenId, e);
                       }}
-                      className="bg-[#3B3B3B] hover:bg-[#4B4B4B] text-white py-2 px-3 rounded-xl text-sm font-medium transition-all"
+                      className="bg-cinza-claro hover:bg-[#4B4B4B] text-white py-2 px-3 rounded-xl text-sm font-medium transition-all"
                     >
                       Vender
                     </button>
@@ -261,7 +258,7 @@ const MyTicketsPage = () => {
                         e.stopPropagation();
                         handleRentTicket(ticket.tokenId, e);
                       }}
-                      className="bg-[#3B3B3B] hover:bg-[#4B4B4B] text-white py-2 px-3 rounded-xl text-sm font-medium transition-all"
+                      className="bg-cinza-claro hover:bg-[#4B4B4B] text-white py-2 px-3 rounded-xl text-sm font-medium transition-all"
                     >
                       Alugar
                     </button>

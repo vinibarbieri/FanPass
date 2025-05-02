@@ -44,7 +44,7 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#333333] to-[#1a1a1a] text-white">
+      <div className="flex items-center justify-center min-h-screen bg-background text-white">
         <p>Carregando...</p>
       </div>
     );
@@ -52,7 +52,7 @@ const ProfilePage = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#333333] to-[#1a1a1a] text-white">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background via-[#333333] to-background text-white">
         <p>{error}</p>
       </div>
     );
@@ -61,10 +61,10 @@ const ProfilePage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#333333] to-[#1a1a1a] flex flex-col items-center justify-center px-6 py-12">
-        <div className="relative bg-[#1a1a1a] bg-opacity-80 backdrop-blur-md rounded-3xl p-10 max-w-2xl w-full shadow-2xl border border-[#333] animate-fade-in space-y-6">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 py-12">
+        <div className="relative bg-background-secundario bg-opacity-80 backdrop-blur-md rounded-3xl p-10 max-w-2xl w-full shadow-2xl border border-[#333] animate-fade-in space-y-6">
           {/* Borda animada */}
-          <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-br from-[#1a1a1a] via-[#333333] to-[#1a1a1a] opacity-20 blur-lg"></div>
+          <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-br from-background via-[#333333] to-background opacity-20 blur-lg"></div>
 
           <h1 className="text-4xl font-extrabold text-white text-center mb-8">
             Meu Perfil

@@ -1,8 +1,8 @@
 /* TicketCard Styles */
 .ticket-card {
-  @apply relative bg-[#2B2B2B] rounded-2xl overflow-hidden border border-white/5
+  @apply relative bg-cinza rounded-2xl overflow-hidden border border-white/5
          transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl
-         hover:shadow-[#FF595C]/10 hover:border-[#FF595C]/20;
+         hover:shadow-vermelho/10 hover:border-vermelho/20;
 }
 
 .ticket-image-container {
@@ -21,13 +21,13 @@
 
 .ticket-type-badge {
   @apply absolute top-4 left-4 px-3 py-1.5 rounded-full text-sm font-medium
-         bg-[#FF595C] text-white shadow-lg shadow-[#FF595C]/20
+         bg-vermelho text-white shadow-lg shadow-vermelho/20
          transform transition-transform duration-300 hover:scale-105;
 }
 
 .like-button {
   @apply absolute top-4 right-4 p-2 rounded-full bg-black/40 backdrop-blur-sm
-         text-white/80 hover:text-[#FF595C] hover:bg-black/60
+         text-white/80 hover:text-vermelho hover:bg-black/60
          transform transition-all duration-300 hover:scale-110;
 }
 
@@ -37,7 +37,7 @@
 
 .ticket-title {
   @apply text-lg font-semibold text-white truncate
-         transition-colors duration-300 hover:text-[#FF595C];
+         transition-colors duration-300 hover:text-vermelho;
 }
 
 .ticket-details {
@@ -50,7 +50,7 @@
 }
 
 .team-logo {
-  @apply w-8 h-8 rounded-full bg-[#3B3B3B] p-1
+  @apply w-8 h-8 rounded-full bg-cinza-claro p-1
          transform transition-transform duration-300 hover:scale-110;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .clock-icon {
-  @apply w-4 h-4 text-[#FF595C];
+  @apply w-4 h-4 text-vermelho;
 }
 
 /* Loading State */
@@ -89,15 +89,15 @@
 }
 
 .skeleton-image {
-  @apply bg-[#3B3B3B] aspect-[4/3];
+  @apply bg-cinza-claro aspect-[4/3];
 }
 
 .skeleton-text {
-  @apply h-4 bg-[#3B3B3B] rounded;
+  @apply h-4 bg-cinza-claro rounded;
 }
 
 .skeleton-text-sm {
-  @apply h-3 bg-[#3B3B3B] rounded;
+  @apply h-3 bg-cinza-claro rounded;
 }
 
 /* Hover Animations */
@@ -128,7 +128,7 @@
 }
 
 .like-button.liked {
-  @apply text-[#FF595C];
+  @apply text-vermelho;
   animation: likeAnimation 0.3s ease-in-out;
 }
 

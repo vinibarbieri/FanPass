@@ -23,8 +23,8 @@ const LoginPage = () => {
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-br from-[#0f0f0f] via-[#1a1a1a] to-[#0f0f0f] min-h-screen flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-[#1a1a1a] border border-[#333] rounded-2xl shadow-xl p-8 text-white">
+      <div className="bg-background min-h-screen flex items-center justify-center px-4">
+        <div className="w-full max-w-md bg-background-secundario border border-[#333] rounded-2xl shadow-xl p-8 text-white">
           <h2 className="text-3xl font-extrabold text-center mb-6 tracking-wide">
             Conecte-se ao Futuro
           </h2>

@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MyTicketsPage from "./pages/MyTicketsPage";
 import Home from "./pages/Home"; // Página aberta
+import Discounts from "./pages/Discounts";
 import { Web3Provider } from "./context/Web3Context";
 
 // Componente de Rota Protegida
@@ -45,6 +46,10 @@ const App = () => {
             <Route
               path="/meus-ingressos"
               element={<ProtectedRoute element={<MyTicketsPage />} />}
+            />
+            <Route
+              path="/meus-descontos"
+              element={<ProtectedRoute element={<Discounts />} />}
             />
           </Routes>
         </AuthProvider>

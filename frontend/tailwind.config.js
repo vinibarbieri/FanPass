@@ -8,8 +8,10 @@ export default {
     extend: {
       colors: {
         vermelho: "#FF595C", // Definindo vermelho claro para botões
+        background: "#111111", // Definindo fundo escuro
+        'background-secundario': "#202020", // Definindo fundo escuro
         cinza: "#2B2B2B", // Definindo cinza escuro
-        cinzaClaro: "#3B3B3B", // Definindo cinza claro
+        'cinza-claro': "#3B3B3B", // Definindo cinza claro
       },
     },
   },

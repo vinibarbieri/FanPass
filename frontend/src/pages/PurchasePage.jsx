@@ -177,7 +177,7 @@ const PurchasePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A]">
+    <div className="min-h-screen bg-[#111111]">
       <Header />
 
       {/* Main Content */}
@@ -185,7 +185,7 @@ const PurchasePage = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column - Image */}
           <div className="lg:w-1/2">
-            <div className="rounded-2xl overflow-hidden bg-[#2B2B2B]">
+            <div className="rounded-2xl overflow-hidden bg-cinza">
               {/* Fundo com o Degradê */}
               <div
                 className="w-full aspect-square flex items-center justify-center"
@@ -203,7 +203,7 @@ const PurchasePage = () => {
           {/* Right Column - Details */}
           <div className="lg:w-1/2 space-y-6">
             {/* Informações Principais */}
-            <div className="bg-[#2B2B2B] rounded-2xl p-6 space-y-4">
+            <div className="bg-cinza rounded-2xl p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-white font-semibold text-2xl">
@@ -212,18 +212,18 @@ const PurchasePage = () => {
                 </div>
                 <div className="text-gray-400">
                   <span>Vendedor: </span>
-                  <span className="text-[#FF595C]">FanPass Official</span>
+                  <span className="text-vermelho">FanPass Official</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-4">
-                <div className="bg-[#3B3B3B] p-4 rounded-xl">
+                <div className="bg-cinza-claro p-4 rounded-xl">
                   <p className="text-gray-400 text-sm">Setor</p>
                   <p className="text-white font-semibold">
                     {ticket.tokenURI.attributes[1].value || "Não informado"}
                   </p>
                 </div>
-                <div className="bg-[#3B3B3B] p-4 rounded-xl">
+                <div className="bg-cinza-claro p-4 rounded-xl">
                   <p className="text-gray-400 text-sm">Temporada</p>
                   <p className="text-white font-semibold">
                     {ticket.tokenURI.attributes[2].value.replace(/\D/g, "")}
@@ -240,32 +240,32 @@ const PurchasePage = () => {
             </div>
 
             {/* Leilão e Preço Card */}
-            <div className="bg-[#2B2B2B] rounded-2xl p-6">
+            <div className="bg-cinza rounded-2xl p-6">
               <div className="space-y-6">
                 {/* Timer */}
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-400">Leilão termina em</p>
                     <div className="flex items-center gap-3 mt-1">
-                      <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
+                      <div className="bg-cinza-claro px-3 py-2 rounded-lg">
                         <span className="text-white font-bold text-xl">
                           {timeLeft.days}
                         </span>
                         <span className="text-gray-400 text-sm ml-1">d</span>
                       </div>
-                      <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
+                      <div className="bg-cinza-claro px-3 py-2 rounded-lg">
                         <span className="text-white font-bold text-xl">
                           {timeLeft.hours.toString().padStart(2, "0")}
                         </span>
                         <span className="text-gray-400 text-sm ml-1">h</span>
                       </div>
-                      <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
+                      <div className="bg-cinza-claro px-3 py-2 rounded-lg">
                         <span className="text-white font-bold text-xl">
                           {timeLeft.minutes.toString().padStart(2, "0")}
                         </span>
                         <span className="text-gray-400 text-sm ml-1">m</span>
                       </div>
-                      <div className="bg-[#3B3B3B] px-3 py-2 rounded-lg">
+                      <div className="bg-cinza-claro px-3 py-2 rounded-lg">
                         <span className="text-white font-bold text-xl">
                           {timeLeft.seconds.toString().padStart(2, "0")}
                         </span>
@@ -289,7 +289,7 @@ const PurchasePage = () => {
                 </div>
 
                 {/* Preço Compre Agora */}
-                <div className="border-t border-[#3B3B3B] pt-4">
+                <div className="border-t border-cinza-claro pt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">Preço Compre Agora</span>
                     <div className="flex items-center gap-2">
@@ -311,11 +311,11 @@ const PurchasePage = () => {
                 </div>
 
                 {/* Preço em Reais */}
-                <div className="border-t border-[#3B3B3B] pt-4">
+                <div className="border-t border-cinza-claro pt-4">
                   <div className="flex justify-between items-center">
                     <div>
                       <span className="text-gray-400">Preço em Reais</span>
-                      <p className="text-sm text-[#FF595C] mt-1">
+                      <p className="text-sm text-vermelho mt-1">
                         Taxa de 15% por não usar FanToken
                       </p>
                     </div>
@@ -329,13 +329,13 @@ const PurchasePage = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={handlePurchase}
-                    className="w-full bg-[#FF595C] hover:bg-[#FF4C4F] text-white py-4 px-6 rounded-xl text-lg font-semibold transition-all"
+                    className="w-full bg-vermelho hover:bg-[#FF4C4F] text-white py-4 px-6 rounded-xl text-lg font-semibold transition-all"
                   >
                     Comprar agora
                   </button>
                   <button
                     onClick={() => setShowBidModal(true)}
-                    className="w-full bg-[#3B3B3B] hover:bg-[#4B4B4B] text-white py-4 px-6 rounded-xl text-lg font-semibold transition-all"
+                    className="w-full bg-cinza-claro hover:bg-[#4B4B4B] text-white py-4 px-6 rounded-xl text-lg font-semibold transition-all"
                   >
                     Dar lance
                   </button>
@@ -344,7 +344,7 @@ const PurchasePage = () => {
             </div>
 
             {/* Histórico de Lances */}
-            <div className="bg-[#2B2B2B] rounded-2xl p-6">
+            <div className="bg-cinza rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-white mb-4">
                 Histórico de Lances
               </h3>
@@ -352,7 +352,7 @@ const PurchasePage = () => {
                 {bidHistory.map((bid, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center py-2 border-b border-[#3B3B3B] last:border-0"
+                    className="flex justify-between items-center py-2 border-b border-cinza-claro last:border-0"
                   >
                     <div>
                       <p className="text-white font-medium">{bid.bidder}</p>
@@ -370,7 +370,7 @@ const PurchasePage = () => {
       {/* Modal de Lance */}
       {showBidModal && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-[#2B2B2B] p-8 rounded-2xl shadow-2xl max-w-md w-full">
+          <div className="bg-cinza p-8 rounded-2xl shadow-2xl max-w-md w-full">
             <h2 className="text-2xl font-bold text-white mb-6">Dar Lance</h2>
             <div className="space-y-4">
               <div>
@@ -393,7 +393,7 @@ const PurchasePage = () => {
                     type="number"
                     value={bidAmount}
                     onChange={(e) => setBidAmount(e.target.value)}
-                    className="bg-[#3B3B3B] text-white px-4 py-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#FF595C]"
+                    className="bg-cinza-claro text-white px-4 py-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-vermelho"
                     placeholder="Digite o valor do lance"
                   />
                   <span className="text-white font-medium">
@@ -405,13 +405,13 @@ const PurchasePage = () => {
             <div className="flex gap-4 mt-6">
               <button
                 onClick={handleBid}
-                className="flex-1 bg-[#FF595C] hover:bg-[#FF4C4F] text-white py-3 rounded-xl font-semibold"
+                className="flex-1 bg-vermelho hover:bg-[#FF4C4F] text-white py-3 rounded-xl font-semibold"
               >
                 Confirmar Lance
               </button>
               <button
                 onClick={() => setShowBidModal(false)}
-                className="flex-1 bg-[#3B3B3B] hover:bg-[#4B4B4B] text-white py-3 rounded-xl font-semibold"
+                className="flex-1 bg-cinza-claro hover:bg-[#4B4B4B] text-white py-3 rounded-xl font-semibold"
               >
                 Cancelar
               </button>
@@ -423,7 +423,7 @@ const PurchasePage = () => {
       {/* Modal Pix */}
       {showPixModal && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-[#2B2B2B] p-8 rounded-2xl shadow-2xl max-w-md w-full">
+          <div className="bg-cinza p-8 rounded-2xl shadow-2xl max-w-md w-full">
             <h2 className="text-2xl font-bold text-white mb-6">
               Pague com Pix
             </h2>
@@ -436,13 +436,13 @@ const PurchasePage = () => {
             <div className="flex gap-4">
               <button
                 onClick={handlePixPaid}
-                className="flex-1 bg-[#FF595C] hover:bg-[#FF4C4F] text-white py-3 rounded-xl font-semibold"
+                className="flex-1 bg-vermelho hover:bg-[#FF4C4F] text-white py-3 rounded-xl font-semibold"
               >
                 Já Paguei
               </button>
               <button
                 onClick={() => setShowPixModal(false)}
-                className="flex-1 bg-[#3B3B3B] hover:bg-[#4B4B4B] text-white py-3 rounded-xl font-semibold"
+                className="flex-1 bg-cinza-claro hover:bg-[#4B4B4B] text-white py-3 rounded-xl font-semibold"
               >
                 Cancelar
               </button>
@@ -454,7 +454,7 @@ const PurchasePage = () => {
       {/* Modal de Opções de Pagamento */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-[#2B2B2B] p-8 rounded-2xl shadow-2xl max-w-md w-full">
+          <div className="bg-cinza p-8 rounded-2xl shadow-2xl max-w-md w-full">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-white">
                 Escolha o método de pagamento
@@ -471,7 +471,7 @@ const PurchasePage = () => {
               {/* Opção Fan Tokens */}
               <button
                 onClick={() => processPayment("fantoken")}
-                className="w-full bg-[#2B2B2B] hover:bg-[#3B3B3B] border border-[#3B3B3B] rounded-xl p-4 transition-all"
+                className="w-full bg-cinza hover:bg-cinza-claro border border-cinza-claro rounded-xl p-4 transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -499,11 +499,11 @@ const PurchasePage = () => {
               {/* Opção PIX */}
               <button
                 onClick={() => processPayment("pix")}
-                className="w-full bg-[#2B2B2B] hover:bg-[#3B3B3B] border border-[#3B3B3B] rounded-xl p-4 transition-all"
+                className="w-full bg-cinza hover:bg-cinza-claro border border-cinza-claro rounded-xl p-4 transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#3B3B3B] rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-cinza-claro rounded-lg flex items-center justify-center">
                       <img
                         src="https://img.icons8.com/fluent/512/pix.png"
                         alt="PIX"
@@ -519,7 +519,7 @@ const PurchasePage = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-white font-bold">R$ {cashPrice}</p>
-                    <p className="text-[#FF595C] text-sm">Taxa de 15%</p>
+                    <p className="text-vermelho text-sm">Taxa de 15%</p>
                   </div>
                 </div>
               </button>
@@ -527,11 +527,11 @@ const PurchasePage = () => {
               {/* Opção Cartão */}
               <button
                 onClick={() => processPayment("cartao")}
-                className="w-full bg-[#2B2B2B] hover:bg-[#3B3B3B] border border-[#3B3B3B] rounded-xl p-4 transition-all"
+                className="w-full bg-cinza hover:bg-cinza-claro border border-cinza-claro rounded-xl p-4 transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#3B3B3B] rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-cinza-claro rounded-lg flex items-center justify-center">
                       <img
                         src="https://cdn-icons-png.flaticon.com/512/657/657076.png"
                         alt="Cartão"
@@ -549,7 +549,7 @@ const PurchasePage = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-white font-bold">R$ {cashPrice}</p>
-                    <p className="text-[#FF595C] text-sm">Taxa de 15%</p>
+                    <p className="text-vermelho text-sm">Taxa de 15%</p>
                   </div>
                 </div>
               </button>

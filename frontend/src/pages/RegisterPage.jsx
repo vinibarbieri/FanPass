@@ -59,8 +59,8 @@ const RegisterPage = () => {
   return (
     <>
       <Header />
-      <div className="bg-[#1A1A1A] min-h-screen flex justify-center items-center relative">
-        <div className="relative flex bg-black rounded-xl shadow-xl overflow-hidden w-full max-w-3xl border-4 border-transparent animate-gradient-border">
+      <div className="bg-background min-h-screen flex justify-center items-center relative">
+        <div className="relative flex bg-background-secundario rounded-xl shadow-xl overflow-hidden w-full max-w-3xl border-4 border-transparent animate-gradient-border">
           {/* Lado Esquerdo com Imagem de Fundo */}
           <div
             className="w-1/2 flex justify-center items-center p-8 relative z-10 bg-cover bg-center"
