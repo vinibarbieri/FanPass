@@ -1,34 +1,33 @@
 # FANPASS – Plataforma de Ingressos NFT com UX 100% Web2
 
-**FANPASS** é uma plataforma Web3 desenvolvida na **Chiliz Chain**, onde clubes esportivos podem emitir ingressos como NFTs (ERC-721) e torcedores podem comprar, alugar ou transferir esses ingressos utilizando **Fan Tokens (ERC20)**. Tudo isso com uma experiência **completamente Web2**, sem necessidade de conexão com carteira ou conhecimento em blockchain por parte do usuário.
+**FANPASS** é uma plataforma Web3 desenvolvida na **Chiliz Chain**, onde clubes esportivos podem emitir ingressos como NFTs (ERC-721) e torcedores podem comprar, alugar ou transferir seus ingressos com **experiência totalmente Web2**, sem interação com carteiras.
 
 ---
 
 ## ✨ Visão Geral
 
-- **Ingressos como NFTs** (ERC-721) emitidos pelos clubes
-- **Compra via Pix ou Cartão**, convertida automaticamente em Fan Tokens (CHZ)
-- **Royalties on-chain** para os clubes a cada transação
-- **NFTs colecionáveis** automáticos após presença no jogo
-- **Painel do torcedor** com histórico, NFTs e experiências desbloqueadas
-- **Smart wallets invisíveis**, criadas automaticamente com Account Abstraction
-- **Sem conexão com MetaMask ou carteiras Web3** → experiência 100% Web2
+- 🎟️ **Ingressos NFT** (ERC-721) para toda a temporada, emitidos diretamente pelos clubes
+- 💳 **Compra via Pix ou Cartão** — sem necessidade de tokens ou carteiras
+- 🔐 **Revenda limitada ao valor original**, conforme legislação brasileira
+- 🔁 **Aluguel de ingressos** peer-to-peer, com royalties ao clube
+- 💰 **Staking gamificado de Fan Tokens**: ganhe descontos em compras/aluguéis diretos com o clube
+- 🏟️ **NFTs colecionáveis de momentos históricos**, distribuídos após presença no estádio
+- 📲 **UX Web2 completa**: smart wallet invisível, login por e-mail, sem necessidade de MetaMask
+- 📉 **Royalties automáticos** para o clube a cada transação no mercado secundário
 
 ---
 
 ## 🧱 Estrutura do Projeto
 
 ```
+
 fanpass/
 ├── contracts/        # Smart contracts com Foundry (Solidity)
 ├── frontend/         # Aplicação React + TypeScript
 ├── backend/          # Node.js/Express para lógica e integrações
-├── sdk/              # Client SDK para interagir com os contratos
-├── subgraphs/        # Configurações do The Graph
-├── infra/            # Docker, CI/CD, scripts de deploy
-├── test/             # Testes com Foundry
 └── README.md
-```
+
+````
 
 ---
 
@@ -36,84 +35,102 @@ fanpass/
 
 ### Blockchain & Smart Contracts
 - **Solidity 0.8.23** (EVM v19)
-- **Chiliz Chain** (Mainnet: `88888`, Testnet: `88882`)
-- **Foundry** (`forge`, `cast`) para desenvolvimento e testes
-- **ERC-721**, **ERC-2981**, **CREATE2**, **Pausable**, **AccessControl**
+- **Chiliz Chain** (Mainnet: `88888`, Spicy Testnet: `88882`)
+- **Foundry** para testes e deploy
+- **ERC-721**, **ERC-2981**, **AccessControl**, **Royalties**, **Transfer restrictions**
 
 ### Frontend
 - **React + TypeScript**
-- **Tailwind CSS ou Bootstrap**
-- **Framer Motion** (animações)
-- UX Web2: sem carteiras, tudo automatizado
+- **Tailwind CSS**
+- Integração com backend via REST/GraphQL
 
 ### Backend
 - **Node.js + Express**
-- **Firebase Auth/Auth0** (login com email/social)
-- **Biconomy Smart Accounts** (account abstraction + gasless)
-- **Tatum ou Moralis** (conversão Pix/cartão → Fan Token)
-
-### Integrações
-- **CoinGecko** (preço em USD dos Fan Tokens + randomness)
-- **The Graph** (subgraph de presença e transferências)
-- **Envio** (monitoramento e alertas no Telegram)
-- **Blocknative Gas API** (estimativa de taxas)
+- **Mongo** (login Web2)
+- **Biconomy Smart Accounts** (Account Abstraction + gasless)
 
 ---
 
-## 🚀 Como Rodar o Projeto
+## 🛠️ Como Rodar o Projeto
 
-### 1. Clonar o repositório
+### 1. Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/fanpass.git
+git clone https://github.com/vinibarbieri/fanpass.git
 cd fanpass
-```
+````
 
-### 2. Setup dos contratos com Foundry
+### 2. Compile os contratos
+
 ```bash
 cd contracts
 forge install
 forge build
-forge test
 ```
 
-### 3. Executar o backend
+### 3. Configure e inicie o backend
+
 ```bash
 cd backend
 npm install
-cp .env.example .env   # configure variáveis de ambiente
+cp .env.example .env
 npm run dev
 ```
 
-### 4. Executar o frontend
+### 4. Rode o frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
----
+### 4. Rode o backend
 
-## ✅ Funcionalidades por Papel
-
-### Torcedor
-- Cria conta com email/social login
-- Vê saldo em Fan Tokens na dashboard
-- Compra ingressos com Pix ou cartão
-- Recebe NFTs automaticamente após ir ao jogo
-
-### Clube
-- Acessa painel para mint de ingressos
-- Define datas, locais e recompensas por presença
-- Recebe royalties on-chain por cada revenda
+```bash
+cd backend
+npm install
+npm run dev
+```
 
 ---
 
-## 📌 Roadmap (em andamento)
+## 👤 Funcionalidades por Tipo de Usuário
 
-- [x] Estrutura do projeto
-- [x] Deploy inicial de `FanTicketNFT`
-- [x] Integração com login social
-- [x] Geração automática de wallet (Biconomy)
-- [x] Integração com CoinGecko
-- [ ] Conversão Pix/cartão → CHZ (via Tatum)
-- [ ] Deploy final na Chiliz Mainnet
+### 🧍 Torcedor
+
+* Cria conta com e-mail
+* Visualiza ingressos para comprar ou alugar
+* Ativa descontos ao reservar Fan Tokens (staking)
+* Paga com Pix ou cartão (sem tokens!)
+* Recebe NFTs colecionáveis por presença nos jogos
+
+### 🏟️ Clube
+
+* Emite ingressos para toda a temporada como NFTs
+* Controla disponibilidade e permite parte para aluguel
+* Recebe automaticamente os royalties de cada revenda ou aluguel
+* Distribui recompensas por presença e ativa experiências
+
+---
+
+## 🗺️ Roadmap (em andamento)
+
+* [x] Estrutura do projeto com Foundry
+* [x] Deploy de `FanTicketNFT` com royalties
+* [x] Integração com smart wallets e UX Web2
+* [x] Implementar sistema de aluguel com tempo limitado
+* [ ] Corrigir função de compra do `Marketplace.sol`
+* [ ] Restrições legais para revenda acima do preço original
+* [ ] Finalizar tela de benefícios com staking gamificado
+* [ ] Subgraph para rastrear uso e presença
+* [ ] Distribuição automática de NFTs colecionáveis
+
+---
+
+## 💬 Contato
+
+Entre em contato pelo [LinkedIn](https://linkedin.com/in/vinibarbieri)
+
+---
+
+**FanPass** está construindo uma nova era na experiência de ir ao estádio — transparente, digital e feita para os torcedores de verdade.
