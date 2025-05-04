@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "node-cache": "^5.1.2",
+    "stripe": "^18.1.0",
     "viem": "^2.28.0",
     "web3": "^4.16.0"
   }
