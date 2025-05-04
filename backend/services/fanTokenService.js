@@ -16,7 +16,8 @@ async function getFanTokenToBRLPrice() {
     const response = await axios.get(
       "https://api.coingecko.com/api/v3/simple/price?ids=chiliz&vs_currencies=brl"
     );
-    cachedPrice = response.data.chiliz.brl;
+    cachedPrice = response.data.chiliz.brl + 2;
+
     lastFetchTime = now;
     return cachedPrice;
   } catch (error) {
