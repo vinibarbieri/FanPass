@@ -4,8 +4,6 @@ import { FiClock, FiHeart } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import getClubGradient from "../../utils/getClubGradient";
-import getTokenSymbol from "../../utils/getTokenSymbol";
-import getFanTokenImage from "../../utils/getFanTokenImage";
 
 const TicketCard = ({ ticket }) => {
   const {
@@ -21,10 +19,11 @@ const TicketCard = ({ ticket }) => {
   } = ticket;
 
   const formatPrice = (price) => {
-    if (!price) return "0";
+    if (!price) return "0,00";
     return new Intl.NumberFormat("pt-BR", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
     }).format(price);
   };
 
@@ -50,8 +49,7 @@ const TicketCard = ({ ticket }) => {
     return "Ano indefinido";
   };
 
-  const priceFanToken = details?.priceFanToken || 0;
-  const priceRealMock = (priceFanToken * 0.3).toFixed(2);
+  const priceReal = details?.priceReal || 0;
 
   return (
     <Link
@@ -91,7 +89,7 @@ const TicketCard = ({ ticket }) => {
 
       {/* Informações */}
       <div className="p-4">
-        {/* Nome + logo */}
+        {/* Nome */}
         <div className="flex items-start justify-between gap-3 mb-2">
           <h3 className="text-white text-lg font-bold leading-tight line-clamp-2 flex-1">
             {name}
@@ -103,60 +101,20 @@ const TicketCard = ({ ticket }) => {
 
         {/* Preço */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <img
-              src={getFanTokenImage(clubId)}
-              alt="Token"
-              className="w-5 h-5"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/sp.png";
-              }}
-            />
-            <span className="text-lg font-bold text-white">
-              {formatPrice(priceFanToken)} {getTokenSymbol(clubId)}
-            </span>
-          </div>
-          <span className="text-sm text-gray-400">≈ R$ {priceRealMock}</span>
-        </div>
-
-        {/* Preço */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-
-            <span className="text-m text-gray-400">
-              Lance atual: <span className="text-white font-medium">{formatPrice(120)} {getTokenSymbol(1)}</span>
-            </span>
-            <img
-              src={getFanTokenImage(clubId)}
-              alt="Token"
-              className="w-3 h-3"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/sp.png";
-              }}
-            />
-          </div>
-          <span className="text-sm text-gray-400">≈ R$ {priceRealMock}</span>
+          <span className="text-lg font-bold text-white">
+            {formatPrice(ticket.priceConversion.reais)}
+          </span>
         </div>
 
         {/* Lance Atual */}
-        {/* <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-
-            <span className="text-xs text-gray-400">
-              Lance atual: <span className="text-white font-medium">{formatPrice(120)}</span>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-m text-gray-400">
+            Lance atual:{" "}
+            <span className="text-white font-medium">
+              {formatPrice(ticket.priceConversion.reais - 10)}
             </span>
-            <img
-              src={getTeamLogo(1)}
-              alt="Token"
-              className="w-3 h-3"
-            />
-          </div>
-          <span className="text-xs text-gray-400">
-            ≈ R$ 36,00
           </span>
-        </div> */}
+        </div>
 
         {/* Tempo */}
         <div className="flex items-center gap-2 text-sm text-gray-400">

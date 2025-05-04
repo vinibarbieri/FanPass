@@ -25,8 +25,8 @@ const PurchasePage = () => {
     seconds: 0,
   });
   const [bidHistory, setBidHistory] = useState([
-    { bidder: "0x123...789", amount: "120 SPFC", time: "há 2 horas" },
-    { bidder: "0x456...012", amount: "100 SPFC", time: "há 3 horas" },
+    { bidder: "0x123...789", amount: "R$ 34.52", time: "há 2 horas" },
+    { bidder: "0x456...012", amount: "R$ 30.50", time: "há 3 horas" },
   ]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -121,6 +121,7 @@ const PurchasePage = () => {
 
   const fanTokenPrice = ticket.details?.priceFanToken;
   const cashPrice = ticket.priceConversion?.reais;
+  const originalPrice = (cashPrice / 0.9).toFixed(2); // Calculate original price before 10% discount
   const getFanTokenImage = (clubId) => {
     return fanTokenImages[clubId] || "/default-fantoken.png";
   };
@@ -144,6 +145,35 @@ const PurchasePage = () => {
         generatePixCode();
         setShowPaymentModal(false);
         setShowPixModal(true);
+        return;
+      }
+
+      if (method === "cartao") {
+        // Create Stripe checkout session
+        const response = await axios.post(
+          "http://localhost:3001/stripe/create-session",
+          {
+            items: [
+              {
+                name: ticket.tokenURI.attributes[0].value,
+                description: ticket.tokenURI?.description || "Ingresso",
+                unit_amount: Math.round(cashPrice * 100), // Convert to centavos
+                currency: "brl",
+                quantity: 1,
+                image: ticket.tokenURI?.image,
+              },
+            ],
+            successUrl: `${window.location.origin}/meus-ingressos`,
+            cancelUrl: `${window.location.origin}/purchase/${ticketId}`,
+          }
+        );
+
+        // Load Stripe.js and redirect to Checkout
+        const stripe = await window.Stripe(
+          "pk_live_51Pv1yKJOfhjFunNiegqftlar5UF68MXwiqP9tZHOYeDFoRH7hAA29dmRXC5Fno6MhCsr6fkLvOGGqmusgjJhz6KK00yOAo4yTH" // Replace with your Stripe publishable key
+        );
+        const { sessionId } = response.data;
+        await stripe.redirectToCheckout({ sessionId });
         return;
       }
 
@@ -276,36 +306,7 @@ const PurchasePage = () => {
                   <div className="text-right">
                     <p className="text-gray-400">Lance atual</p>
                     <div className="flex items-center gap-2 justify-end mt-1">
-                      <img
-                        src={getFanTokenImage(ticket.clubId)}
-                        alt="FanToken"
-                        className="w-6 h-6"
-                      />
-                      <p className="text-white font-bold text-xl">
-                        100 {getFanTokenSymbol(ticket.clubId)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Preço Compre Agora */}
-                <div className="border-t border-cinza-claro pt-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Preço Compre Agora</span>
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={getFanTokenImage(ticket.clubId)}
-                        alt="FanToken"
-                        className="w-8 h-8"
-                      />
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold text-white">
-                          {fanTokenPrice}
-                        </span>
-                        <span className="text-2xl font-bold text-white">
-                          {getFanTokenSymbol(ticket.clubId)}
-                        </span>
-                      </div>
+                      <p className="text-white font-bold text-xl"></p>
                     </div>
                   </div>
                 </div>
@@ -314,14 +315,18 @@ const PurchasePage = () => {
                 <div className="border-t border-cinza-claro pt-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="text-gray-400">Preço em Reais</span>
-                      <p className="text-sm text-vermelho mt-1">
-                        Taxa de 15% por não usar FanToken
-                      </p>
+                      <span className="text-gray-400">Preço comprar agora</span>
+                      <br />
+                      <span className="text-vermelho">
+                        Você tem 10% de desconto devido aos tokens em staking
+                      </span>
                     </div>
-                    <span className="text-xl font-bold text-white">
-                      R$ {cashPrice}
-                    </span>
+                    <div className="text-right">
+                      <span className="text-xl font-bold text-white">
+                        R$ {cashPrice}
+                      </span>
+                      <s className="text-gray-400 ml-2">R$ {originalPrice}</s>
+                    </div>
                   </div>
                 </div>
 
@@ -376,13 +381,8 @@ const PurchasePage = () => {
               <div>
                 <p className="text-gray-400 mb-2">Lance mínimo</p>
                 <div className="flex items-center gap-2">
-                  <img
-                    src={getFanTokenImage(ticket.clubId)}
-                    alt="FanToken"
-                    className="w-6 h-6"
-                  />
                   <p className="text-white">
-                    105 {getFanTokenSymbol(ticket.clubId)}
+                    R$ {ticket.priceConversion.reais - 10}
                   </p>
                 </div>
               </div>
@@ -396,9 +396,6 @@ const PurchasePage = () => {
                     className="bg-cinza-claro text-white px-4 py-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-vermelho"
                     placeholder="Digite o valor do lance"
                   />
-                  <span className="text-white font-medium">
-                    {getFanTokenSymbol(ticket.clubId)}
-                  </span>
                 </div>
               </div>
             </div>
@@ -461,41 +458,14 @@ const PurchasePage = () => {
               </h2>
               <button
                 onClick={() => setShowPaymentModal(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-4
+                00 hover:text-white"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-4">
-              {/* Opção Fan Tokens */}
-              <button
-                onClick={() => processPayment("fantoken")}
-                className="w-full bg-cinza hover:bg-cinza-claro border border-cinza-claro rounded-xl p-4 transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={getFanTokenImage(ticket.clubId)}
-                      alt="FanToken"
-                      className="w-10 h-10"
-                    />
-                    <div className="text-left">
-                      <p className="text-white font-semibold">Fan Tokens</p>
-                      <p className="text-gray-400 text-sm">
-                        Pague com {getFanTokenSymbol(ticket.clubId)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white font-bold">
-                      {fanTokenPrice} {getFanTokenSymbol(ticket.clubId)}
-                    </p>
-                    <p className="text-green-500 text-sm">Melhor preço</p>
-                  </div>
-                </div>
-              </button>
-
               {/* Opção PIX */}
               <button
                 onClick={() => processPayment("pix")}
@@ -543,7 +513,7 @@ const PurchasePage = () => {
                         Cartão de Crédito
                       </p>
                       <p className="text-gray-400 text-sm">
-                        Parcele em até 12x
+                        Pague com segurança via Stripe
                       </p>
                     </div>
                   </div>

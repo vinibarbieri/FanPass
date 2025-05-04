@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TicketCard from "./TicketCard";
-import { FiSearch, FiFilter } from 'react-icons/fi';
 
 const tabs = [
   { id: "comprar", label: "Comprar" },
@@ -50,7 +49,9 @@ const Marketplace = () => {
             const ticket = response.data;
             if (ticket.tokenURI) {
               try {
-                const tokenData = await axios.get(ticket.tokenURI, { headers: { Authorization: undefined } });
+                const tokenData = await axios.get(ticket.tokenURI, {
+                  headers: { Authorization: undefined },
+                });
                 return {
                   ...ticket,
                   name: tokenData.data.name,
@@ -86,15 +87,21 @@ const Marketplace = () => {
     );
 
     if (selectedTeam) {
-      filtered = filtered.filter(ticket => ticket.clubId === parseInt(selectedTeam));
+      filtered = filtered.filter(
+        (ticket) => ticket.clubId === parseInt(selectedTeam)
+      );
     }
 
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price_asc":
-          return (a.details?.priceFanToken || 0) - (b.details?.priceFanToken || 0);
+          return (
+            (a.details?.priceFanToken || 0) - (b.details?.priceFanToken || 0)
+          );
         case "price_desc":
-          return (b.details?.priceFanToken || 0) - (a.details?.priceFanToken || 0);
+          return (
+            (b.details?.priceFanToken || 0) - (a.details?.priceFanToken || 0)
+          );
         case "recent":
         default:
           return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
@@ -106,11 +113,8 @@ const Marketplace = () => {
 
   return (
     <div className="min-h-screen bg-background">
-
-
       {/* Conteúdo principal */}
       <div className="max-w-7xl mx-auto px-4 pt-32 pb-12">
-
         {/* Filtros (Time, Ordenar) */}
         {showFilters && (
           <div className="bg-background-secundario rounded-2xl p-6 mb-6 shadow-lg">
@@ -123,21 +127,27 @@ const Marketplace = () => {
                   className="w-full px-4 py-2 bg-cinza text-white rounded-xl border border-white/10 focus:outline-none focus:border-vermelho"
                 >
                   <option value="">Todos os times</option>
-                  {teams.map(team => (
-                    <option key={team.id} value={team.id}>{team.name}</option>
+                  {teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-gray-400 mb-2 text-sm">Ordenar por</label>
+                <label className="block text-gray-400 mb-2 text-sm">
+                  Ordenar por
+                </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full px-4 py-2 bg-cinza text-white rounded-xl border border-white/10 focus:outline-none focus:border-vermelho"
                 >
-                  {sortOptions.map(option => (
-                    <option key={option.id} value={option.id}>{option.label}</option>
+                  {sortOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </div>
