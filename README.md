@@ -1,65 +1,65 @@
-# FANPASS – Plataforma de Ingressos NFT com UX 100% Web2
+# FANPASS – NFT Ticketing Platform with 100% Web2 UX
 
-**FANPASS** é uma plataforma Web3 desenvolvida na **Chiliz Chain**, onde clubes esportivos podem emitir ingressos como NFTs (ERC-721) e torcedores podem comprar, alugar ou transferir seus ingressos com **experiência totalmente Web2**, sem interação com carteiras.
-
----
-
-## ✨ Visão Geral
-
-- 🎟️ **Ingressos NFT** (ERC-721) para toda a temporada, emitidos diretamente pelos clubes
-- 💳 **Compra via Pix ou Cartão** — sem necessidade de tokens ou carteiras
-- 🔐 **Revenda limitada ao valor original**, conforme legislação brasileira
-- 🔁 **Aluguel de ingressos** peer-to-peer, com royalties ao clube
-- 💰 **Staking gamificado de Fan Tokens**: ganhe descontos em compras/aluguéis diretos com o clube
-- 🏟️ **NFTs colecionáveis de momentos históricos**, distribuídos após presença no estádio
-- 📲 **UX Web2 completa**: smart wallet invisível, login por e-mail, sem necessidade de MetaMask
-- 📉 **Royalties automáticos** para o clube a cada transação no mercado secundário
+**FANPASS** is a Web3 platform built on **Chiliz Chain**, where sports clubs can issue tickets as NFTs (ERC-721) and fans can buy, rent, or transfer tickets with a **fully Web2 experience**, with no wallet interaction.
 
 ---
 
-## 🧱 Estrutura do Projeto
+## ✨ Overview
+
+- 🎟️ **NFT tickets** (ERC-721) for the full season, issued directly by clubs
+- 💳 **Purchase via Pix or card** — no tokens or wallets required
+- 🔐 **Resale capped at the original price**, aligned with Brazilian regulation
+- 🔁 **Peer-to-peer ticket rentals**, with royalties to the club
+- 💰 **Gamified Fan Token staking**: earn discounts on direct purchases/rentals with the club
+- 🏟️ **Collectible NFTs for historic moments**, distributed after stadium attendance
+- 📲 **Full Web2 UX**: invisible smart wallet, email login, no MetaMask required
+- 📉 **Automatic royalties** for the club on every secondary-market transaction
+
+---
+
+## 🧱 Project Structure
 
 ```
 
 fanpass/
-├── contracts/        # Smart contracts com Foundry (Solidity)
-├── frontend/         # Aplicação React + TypeScript
-├── backend/          # Node.js/Express para lógica e integrações
+├── contracts/        # Smart contracts with Foundry (Solidity)
+├── frontend/         # React + TypeScript app
+├── backend/          # Node.js/Express for logic and integrations
 └── README.md
 
 ````
 
 ---
 
-## ⚙️ Tecnologias Utilizadas
+## ⚙️ Tech Stack
 
-### Blockchain & Smart Contracts
+### Blockchain & smart contracts
 - **Solidity 0.8.23** (EVM v19)
 - **Chiliz Chain** (Mainnet: `88888`, Spicy Testnet: `88882`)
-- **Foundry** para testes e deploy
+- **Foundry** for testing and deployment
 - **ERC-721**, **ERC-2981**, **AccessControl**, **Royalties**, **Transfer restrictions**
 
 ### Frontend
 - **React + TypeScript**
 - **Tailwind CSS**
-- Integração com backend via REST/GraphQL
+- Backend integration via REST/GraphQL
 
 ### Backend
 - **Node.js + Express**
-- **Mongo** (login Web2)
+- **Mongo** (Web2 login)
 - **Biconomy Smart Accounts** (Account Abstraction + gasless)
 
 ---
 
-## 🛠️ Como Rodar o Projeto
+## 🛠️ Running the Project
 
-### 1. Clone o repositório
+### 1. Clone the repository
 ```bash
 git clone https://github.com/vinibarbieri/fanpass.git
 cd fanpass
 ````
 
-### 2. Compile os contratos
+### 2. Compile the contracts
 
 ```bash
 cd contracts
@@ -67,7 +67,7 @@ forge install
 forge build
 ```
 
-### 3. Configure e inicie o backend
+### 3. Configure and start the backend
 
 ```bash
 cd backend
@@ -76,7 +76,7 @@ cp .env.example .env
 npm run dev
 ```
 
-### 4. Rode o frontend
+### 4. Run the frontend
 
 ```bash
 cd frontend
@@ -84,53 +84,45 @@ npm install
 npm run dev
 ```
 
-### 4. Rode o backend
+---
 
-```bash
-cd backend
-npm install
-npm run dev
-```
+## 👤 Features by User Type
+
+### 🧍 Fan
+
+* Sign up with email
+* Browse tickets to buy or rent
+* Unlock discounts by reserving Fan Tokens (staking)
+* Pay with Pix or card (no tokens!)
+* Receive collectible NFTs for attending matches
+
+### 🏟️ Club
+
+* Issue full-season tickets as NFTs
+* Control availability and allow a portion for rental
+* Automatically receive royalties on every resale or rental
+* Distribute attendance rewards and activate experiences
 
 ---
 
-## 👤 Funcionalidades por Tipo de Usuário
+## 🗺️ Roadmap (in progress)
 
-### 🧍 Torcedor
-
-* Cria conta com e-mail
-* Visualiza ingressos para comprar ou alugar
-* Ativa descontos ao reservar Fan Tokens (staking)
-* Paga com Pix ou cartão (sem tokens!)
-* Recebe NFTs colecionáveis por presença nos jogos
-
-### 🏟️ Clube
-
-* Emite ingressos para toda a temporada como NFTs
-* Controla disponibilidade e permite parte para aluguel
-* Recebe automaticamente os royalties de cada revenda ou aluguel
-* Distribui recompensas por presença e ativa experiências
+* [x] Project structure with Foundry
+* [x] Deploy `FanTicketNFT` with royalties
+* [x] Smart wallet integration and Web2 UX
+* [x] Time-limited rental system
+* [ ] Fix purchase flow in `Marketplace.sol`
+* [ ] Legal restrictions for resale above original price
+* [ ] Finish benefits screen with gamified staking
+* [ ] Subgraph to track usage and attendance
+* [ ] Automatic distribution of collectible NFTs
 
 ---
 
-## 🗺️ Roadmap (em andamento)
+## 💬 Contact
 
-* [x] Estrutura do projeto com Foundry
-* [x] Deploy de `FanTicketNFT` com royalties
-* [x] Integração com smart wallets e UX Web2
-* [x] Implementar sistema de aluguel com tempo limitado
-* [ ] Corrigir função de compra do `Marketplace.sol`
-* [ ] Restrições legais para revenda acima do preço original
-* [ ] Finalizar tela de benefícios com staking gamificado
-* [ ] Subgraph para rastrear uso e presença
-* [ ] Distribuição automática de NFTs colecionáveis
+Reach out on [LinkedIn](https://linkedin.com/in/vinibarbieri)
 
 ---
 
-## 💬 Contato
-
-Entre em contato pelo [LinkedIn](https://linkedin.com/in/vinibarbieri)
-
----
-
-**FanPass** está construindo uma nova era na experiência de ir ao estádio — transparente, digital e feita para os torcedores de verdade.
+**FanPass** is building a new era in the stadium experience — transparent, digital, and built for real fans.
